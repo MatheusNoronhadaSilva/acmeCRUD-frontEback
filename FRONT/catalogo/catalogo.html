@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="catalogo.css">
+    <script type="module" src="catalogo.js" defer></script>
+</head>
+<body class="overflow-x-hidden h-screen w-screen flex flex-col">
+    <a class="absolute top-9 left-5" href="../menu_catalogos/menu.html">
+        <span class="text-lg text-white">voltar</span>
+    </a>
+    <main class="flex flex-col h-full w-full">
+        <div class="bg-blue-950 pb-12 h-3/4 w-full flex flex-row">
+            <div class="h-full w-2/5 flex flex-col">
+                <div class="w-full h-40 flex flex-col items-center">
+                    <h1 id="nome" class="text-5xl mb-3 text-center w-3/4 mt-5 text-white font-bold"></h1>
+                    <div class="flex flex-row space-x-8">
+                        <div class="flex flex-row space-x-3">
+                            <h2 id="lancamento" class="text-md text-white" ></h2>
+                            <h2 id="duracao" class="text-md text-white "></h2>
+                        </div>
+                        <img class="h-6 w-6" src="../img/image 2.png" alt="">
+                    </div>
+                    <div class="flex flex-row space-x-3 mt-2">
+                        <img class="h-5 w-5" src="../img/image-removebg-preview 6.png" alt="">
+                        <img class="h-5 w-5" src="../img/image-removebg-preview 6.png" alt="">
+                        <img class="h-5 w-5" src="../img/image-removebg-preview 6.png" alt="">
+                        <img class="h-5 w-5" src="../img/image-removebg-preview 6.png" alt="">
+                    </div>
+                </div>
+                <div class="flex flex-col justify-start pl-6">
+                    <p id="sinopse" class="mt-8 w-full text-start text-white font-bold text-xl">.</p>
+                    <div class="flex flex-col space-y-3 mt-12">
+                        <div class="bg-white flex flex-row w-3/5 h-16 items-center justify-between px-12 rounded-lg">
+                            <img src="../img/play 2.png" alt="">
+                            <p class="font-bold text-2xl">Assistir</p>
+                        </div>
+                        <div class="bg-white flex flex-row w-3/5 h-16 items-center justify-between px-12 rounded-lg">
+                            <img src="../img/reiniciar 1.png" alt="">
+                            <p class="font-bold text-2xl">Reiniciar</p>
+                        </div>
+                        <!-- <div class="bg-white flex flex-row w-3/5 h-16 items-center justify-between pl-12 pr-6 rounded-lg">
+                            <img src="../img/mais episodios 1.png" alt="">
+                            <p class="font-bold text-2xl">mais episódios</p>
+                        </div> -->
+                    </div>
+                </div>
+             </div>
+             <div class="flex-grow bg-blue-950 flex flex-col">
+                <div class="relative flex w-full h-5/6 justify-end">
+                    <img class="absolute h-full left-0" src="../img/Rectangle 14.png" alt="">
+                    <img class="absolute w-full bottom-0" src="../img/Rectangle 16.png" alt="">
+                    <img id="img_filme" class="h-full w-full pl-24 pb-12" src="../img/simpsons.jfif" alt="">
+                </div>
+                <div class="flex flex-row w-full h-full items-center justify-evenly pl-20">
+                    <div id="divComprar" class="bg-white flex-col flex text-center px-24 py-2 rounded-lg">
+                        <p class="text-2xl font-bold" >Comprar série</p>
+                        <p id="comprar" class="text-2xl font-bold">R$29,99</p>
+                    </div>
+                    <div class="bg-white flex-col flex text-center px-24 py-2 rounded-lg">
+                        <p class="text-2xl font-bold">Alugar série</p>
+                        <p id="alugar" class="text-2xl font-bold">R$9,99/mês</p>
+                    </div>
+                </div>
+             </div>
+        </div>
+        <div class="h-full w-full custom-color flex-col pl-32 pb-14">
+            <h2 class="mt-12 text-2xl font-bold text-white mb-3" >Sugestões</h2>
+            <div class="flex flex-row space-x-12 overflow-x-auto">
+                <div class="flex flex-row space-x-12">
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                </div>
+            </div>
+            <h2 class="mt-8 text-2xl font-bold text-white mb-3" >Sugestões</h2>
+            <div class="flex flex-row space-x-12 overflow-x-auto">
+                <div class="flex flex-row space-x-12">
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                    <div class="cursor-pointer h-40 w-72">
+                        <img class="h-full w-full border hover:border-red-500 border-white border-solid border-4 rounded-xl" src="../img/onepiece.webp" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

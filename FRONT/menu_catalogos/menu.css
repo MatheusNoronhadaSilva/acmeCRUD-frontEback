@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-image: url('../img/fundo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-h{
+    height: 3.8vw;
+}
+
+.custom-w{
+    width: 4vw;
+}
+
+.custom-border-radius{
+    border-radius: 2vw;
+}

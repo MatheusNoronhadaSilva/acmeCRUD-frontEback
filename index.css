@@ -1,0 +1,17 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.custom-color{
+    background-color: #333564;
+}
+
+.custom-size{
+    font-size: 50vh
+}
+
+input{
+    border: none;
+}

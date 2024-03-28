@@ -1,0 +1,18 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.custom-color{
+    background-color: #333564;
+}
+
+#sinopse{
+    font-size: 1.1rem;
+    line-height: 2.7vh;
+}
+
+::-webkit-scrollbar{
+    display: none;
+}

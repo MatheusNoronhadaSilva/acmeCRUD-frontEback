@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="editar.css">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="editar.js" defer></script>
+</head>
+<body class="h-screen w-screen flex items-center justify-center">
+    <main class="bg-zinc-300 h-5/6 w-3/4 flex flex-row">
+        <div class="flex flex-col px-14 py-8 w-1/2 space-y-12 h-full">
+            <a href="../admin/admin2.html">
+                Voltar
+            </a>
+            <div id="inserir_imagem" class="h-80 w-full bg-zinc-900 flex items-center relative justify-center px-10">
+                <input id="link_imagem" class="w-5/6 h-6 text-sm absolute" type="text">
+            </div>
+            <div class="flex-grow flex items-center justify-center">
+                <div id="botao" class="w-3/4 h-24 bg-zinc-900 flex text-white text-4xl font-bold justify-center items-center">
+                    Editar filme
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-grow flex-col px-14 py-24 space-x-12">
+            <div class="flex flex-col w-full">
+                <span class="text-3xl font-bold">Nome</span>
+                <input id="nome" type="text" class="bg-zinc-300 border-b-4 border-zinc-900">
+            </div>
+            <div class="flex flex-col w-full">
+                <span class="text-3xl font-bold" >Sinopse</span>
+                <textarea id="sinopse" maxlength="250" class="w-full h-32"></textarea>
+            </div>
+            <div class="flex flex-row flex-grow">
+                <div class="flex flex-col w-1/2 h-full space-y-12">
+                    <div class="flex flex-col w-full items-center justify-center">
+                        <span class="text-2xl font-bold">lançamento</span>
+                        <input id="lancamento" class="h-16 w-2/3 text-2xl" type="date">
+                    </div>
+                    <div class="flex flex-col w-full items-center justify-center">
+                        <span class="text-2xl font-bold">Duração</span>
+                        <input id="duracao" class="text-2xl h-16 text-center w-2/3" maxlength="8" type="text">
+                    </div>
+                </div>
+                <div class="flex flex-col w-1/2 h-full space-y-12">
+                    <div class="flex flex-col w-full items-center justify-center">
+                        <span class="text-2xl font-bold">Valor para alugar</span>
+                        <input id="valorAlugar" class="h-16 w-2/3 text-2xl text-center" min="0" max="99" type="number">
+                    </div>
+                    <div class="flex flex-col w-full items-center justify-center">
+                        <span class="text-2xl font-bold">Valor para comprar</span>
+                        <input id="valorComprar" class="h-16 w-2/3 text-2xl text-center" type="number">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
