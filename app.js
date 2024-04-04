@@ -213,8 +213,8 @@ app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
 //     }
 // })
 
-const PORT = 5080
-app.listen(PORT, () => {
-    console.log(`foiiii ${PORT}`)
+const port = process.env.PORT || 8080
+app.listen(port, () => {
+    console.log(`foiiii ${port}`)
 })
 

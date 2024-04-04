@@ -134,7 +134,7 @@ lixeira.addEventListener('click', async function(){
 })
 
 async function pegarFilmes() {
-    const endpoint = 'http://localhost:5080/v2/acmeFilmes/filmes';
+    const endpoint = 'http://localhost:8080/v2/acmeFilmes/filmes';
     const filmesApi = await fetch(endpoint);
     const listFilmes = await filmesApi.json();
     return listFilmes;
@@ -143,7 +143,7 @@ async function pegarFilmes() {
 async function deletarFilme(id){
 
 
-        const endpoint = `http://localhost:5080/v2/acmeFilmes/filme/deletar/${id}`
+        const endpoint = `http://localhost:8080/v2/acmeFilmes/filme/deletar/${id}`
     try {
         const response = await fetch(endpoint, {
             method: 'DELETE'

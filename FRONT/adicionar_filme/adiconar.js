@@ -85,7 +85,7 @@ async function postarNovoFilme(novoFilmeJSON) {
 
     console.log('enviar');
 
-    const endpoint = 'http://localhost:5080/v2/acmeFilmes/filme'
+    const endpoint = 'http://localhost:8080/v2/acmeFilmes/filme'
     
     const options = {
         method: 'POST',

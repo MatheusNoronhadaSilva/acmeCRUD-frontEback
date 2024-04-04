@@ -87,7 +87,7 @@ async function EditarFilme(filmeEditadoJSON) {
 
     console.log('editar');
 
-    const endpoint = `http://localhost:5080/v2/acmeFilmes/filme/atualizar/${idFilmeAtual}`
+    const endpoint = `http://localhost:8080/v2/acmeFilmes/filme/atualizar/${idFilmeAtual}`
     
     const options = {
         method: 'PUT',

@@ -40,7 +40,7 @@ function arrumarDuracao(duracao){
 async function pegarFilmeDados(idFilmeAtual){
 
     const id = idFilmeAtual
-    const endpoint = `http://localhost:5080/v2/acmeFilmes/filme/${id}`
+    const endpoint = `http://localhost:8080/v2/acmeFilmes/filme/${id}`
     const filme = await fetch(endpoint);
     const filmeDados = await filme.json();
     return filmeDados.filme[0];
