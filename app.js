@@ -202,6 +202,131 @@ app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
     }
 })
 
+// GENERO - GET
+app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
+
+    let dadosGeneros = await controllerFilmes.getAllgeneros()
+
+    if (dadosGeneros) {
+        response.json(dadosGeneros)
+        response.status(200)
+    } else {
+        response.json({ message: 'nenhum registro encontrado'})
+        response.status(404)
+    }
+})
+
+//CLASSIFICAÇÃO - GET
+app.get('/v2/acmeFilmes/classificacoes', cors(), async function(request, response){
+
+    let dadosClassificacao = await controllerFilmes.getAllClassificacoes()
+
+    if(dadosClassificacao){
+        response.status(200)
+        response.json(dadosClassificacao)
+    } else {
+        response.status(404)
+        response.json({message: "nenhum registro encontrado"})
+    }
+})
+
+//SEXO - GET
+app.get('/v2/acmeFilmes/sexos', cors(), async function(request, response){
+
+    let dadosSexos = await controllerFilmes.getAllSexos()
+
+    if(dadosSexos) {
+        response.status(200)
+        response.json(dadosSexos)
+    } else {
+        response.status(404)
+        response.json({message: 'nenhum registro encontrado'})
+    }
+})
+
+//NACIONALIDADES - GET
+app.get('/v2/acmeFilmes/nacionalidades', cors(), async function(request, response){
+
+    let dadosNacionalidades = await controllerFilmes.getAllNacionalidades()
+
+    if(dadosNacionalidades) {
+        response.status(200)
+        response.json(dadosNacionalidades)
+    } else {
+        response.status(404)
+        response.json({messag: 'nenhum registro encontrado'})
+    }
+})
+
+//GENERO - POST
+app.post('/v2/acmeFilmes/genero', cors(), bodyParserJSON, async function(request, response){
+
+    let contentType = request.header('content-type')
+
+    console.log(contentType);
+
+    let dadosBody = request.body
+
+    let resultDadosNovoGenero = await controllerFilmes.setInserirNovogenero(dadosBody, contentType)
+    console.log(resultDadosNovoGenero);
+
+    if(resultDadosNovoGenero){
+        response.status(200)
+        response.json(resultDadosNovoGenero)
+    } else {
+        response.status(404)
+    }
+})
+
+//CLASSIFICACAO - POST
+app.post('/v2/acmeFilmes/classificacao', cors(), bodyParserJSON, async function(request, response){
+
+    let contentType = request.header('content-type')
+
+    console.log(contentType);
+
+    let dadosBody = request.body
+
+    let resultDadosNovaClassificacao = await controllerFilmes.setInserirNovaClassificacao(dadosBody, contentType)
+
+    if(resultDadosNovaClassificacao) {
+        response.status(200)
+        response.json(resultDadosNovaClassificacao)
+    } else {
+        response.status(404)
+    }
+})
+
+//GENERO - DELETE
+app.delete('/v2/acmeFilmes/genero/deletar/:id', cors(), async function(request, response){
+
+    let idGenero = request.params.id
+
+    let resultGenero = await controllerFilmes.setExcluirGenero(idGenero)
+
+    if(resultGenero){
+        response.status(200)
+        response.json(resultGenero)
+    } else {
+        response.status(404)
+    }
+})
+
+//CLASSIFICACAO - DELETE
+app.delete('/v2/acmeFilmes/classificacao/deletar/:id', cors(), async function(request, response){
+
+    let idDeletar = request.params.id
+
+    let resultClassificacao = await controllerFilmes.setExcluirClassificacao(idDeletar)
+
+    if(resultClassificacao){
+        response.status(200)
+        response.json(resultClassificacao)
+    } else {
+        response.status(404)
+    }
+})
+
 // app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
 
 //     let controleNomes = require('./controller/funcoes')

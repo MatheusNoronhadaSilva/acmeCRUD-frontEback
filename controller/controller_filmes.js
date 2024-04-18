@@ -85,6 +85,83 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
     }
 }
 
+const setInserirNovogenero = async function (dadosGeneros, contentType) {
+
+
+    try {
+        
+        if(String(contentType).toLowerCase() == 'application/json') {
+
+            let novoGeneroJSON = {}
+
+
+
+            if(dadosGeneros.genero == "" || dadosGeneros.genero == null || dadosGeneros.genero == undefined || dadosGeneros.genero > 50) {
+                return message.ERROR_REQUIRED_FIELDS //400
+            } else {
+
+                let novoGenero = await filmesDAO.insertGenero(dadosGeneros)
+
+                if(novoGenero){
+                    novoGeneroJSON.genero = novoGenero
+                    novoGeneroJSON.status = message.SUCESS_CREATED_ITEM.status
+                    novoGeneroJSON.status_code = message.SUCESS_CREATED_ITEM.status_code
+                    novoGeneroJSON.message = message.SUCESS_CREATED_ITEM.message
+
+                    console.log(novoGeneroJSON);
+
+                    return novoGeneroJSON
+                } else {
+                    return message.ERROR_INTERVAL_SERVER //500
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
+const setInserirNovaClassificacao = async function(dadosClassificacao, contentType) {
+
+    console.log('kkfdsdsdsd');
+
+    try {
+        
+        if(String(contentType).toLowerCase() == 'application/json') {
+
+            console.log(dadosClassificacao);
+
+            let novaClassificacaoJSON = {}
+
+            if(dadosClassificacao.classificacao == "" ||  dadosClassificacao.classificacao == null || dadosClassificacao.classificacao.length > 5 ||
+               dadosClassificacao.caracteristicas == "" || dadosClassificacao.caracteristicas == null || dadosClassificacao.caracteristicas.length > 65000 ||
+               dadosClassificacao.img_classificacao == "" || dadosClassificacao.img_classificacao == null || dadosClassificacao.img_classificacao.length > 250
+            ) {
+                return message.ERROR_REQUIRED_FIELDS //400
+            } else {
+
+                console.log('skdfbsdbfjkb');
+
+                let novaClassificacao = await filmesDAO.InsertClassificacao(dadosClassificacao)
+
+                console.log(novaClassificacao);
+                if(novaClassificacao){
+                    novaClassificacaoJSON.genero = novaClassificacao
+                    novaClassificacaoJSON.status = message.SUCESS_CREATED_ITEM.status
+                    novaClassificacaoJSON.status_code = message.SUCESS_CREATED_ITEM.status_code
+                    novaClassificacaoJSON.message = message.SUCESS_CREATED_ITEM.message
+
+                    return novaClassificacaoJSON
+                } else {
+                    return message.ERROR_INTERVAL_SERVER //500
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
 const setAtualizarFilme = async function (id, dadosFilme, contentType) {
     //função para atualizar um filme
 
@@ -189,6 +266,45 @@ const setExcluirFilmes = async function (id) {
 
 }
 
+const setExcluirGenero = async function (id) {
+
+    let idGenero = id
+
+    if( idGenero == '' || idGenero == undefined ||isNaN(idGenero)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+        let resultGenero = await filmesDAO.deleteGenero(idGenero)
+
+        if(resultGenero == true) {
+            return message.SUCESS_DELETE_ITEM
+        } else if (resultGenero == false) {
+            return message.ERROR_NOT_FOUND //500
+        } else {
+            return message.ERROR_INTERVAL_SERVER_DB
+        }
+    }
+}
+
+const setExcluirClassificacao = async function (id) {
+
+    let idClassificacao = id
+
+    if (idClassificacao == '' || idClassificacao == undefined || isNaN(idClassificacao)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+        let resultClassificacao = await filmesDAO.deleteClassificacao(idClassificacao)
+
+console.log(resultClassificacao);
+        if(resultClassificacao == true) {
+            return message.SUCESS_DELETE_ITEM
+        } else if (resultClassificacao == false ) {
+            return message.ERROR_NOT_FOUND //404
+        } else {
+            return message.ERROR_INTERVAL_SERVER_DB
+        }
+    }
+}
+
 const getListarFilmes = async function () {
 
     //cria um objeto JSON
@@ -209,6 +325,76 @@ const getListarFilmes = async function () {
         return false
     }
 }
+
+const getAllgeneros = async function () {
+
+    let generosJSON = {}
+
+    let dadosgeneros = await filmesDAO.selectAllGeneros()
+
+    if(dadosgeneros) {
+        generosJSON.generos = dadosgeneros
+        generosJSON.quantidade = dadosgeneros.length
+        generosJSON.status_code = 200
+
+        return generosJSON
+    } else {
+        return false
+    }
+}
+
+const getAllClassificacoes = async function () {
+
+    let classificacaoJSON = {}
+
+    let dadosClassificacao = await filmesDAO.selectAllClassificacoes()
+
+    if(dadosClassificacao) {
+        classificacaoJSON.classificacao = dadosClassificacao
+        classificacaoJSON.quantidade - dadosClassificacao.length
+        classificacaoJSON.status_code = 200
+
+        return classificacaoJSON
+    } else {
+        return false
+    }
+}
+
+const getAllSexos = async function () {
+
+    let sexoJSON = {}
+
+    let dadosSexos = await filmesDAO.selectAllSexos()
+
+    console.log(dadosSexos);
+    if(dadosSexos) {
+        sexoJSON.sexos = dadosSexos
+        sexoJSON.quantidade = dadosSexos.length
+        sexoJSON.status_code = 200
+
+        return sexoJSON
+    } else {
+        return false
+    }
+}
+
+const getAllNacionalidades = async function () {
+
+    let nacionalidadeJSON = {}
+
+    let dadosNacionalidades = await filmesDAO.selectAllNacionalidades()
+
+    if(dadosNacionalidades) {
+        nacionalidadeJSON.nacionalidade = dadosNacionalidades
+        nacionalidadeJSON.quantidade = dadosNacionalidades.length
+        nacionalidadeJSON.status_code = 200
+
+        return nacionalidadeJSON
+    } else {
+        return false
+    }
+}
+
 
 const getUltimosPedidos = async function () {
 
@@ -354,6 +540,13 @@ const getBuscarFilme = async function (id) {
 }
 
 module.exports = {
+    getAllNacionalidades,
+    getAllSexos,
+    setExcluirClassificacao,
+    setInserirNovaClassificacao,
+    setExcluirGenero,
+    setInserirNovogenero,
+    getAllgeneros,
     getNomeFilme,
     getListarComprados,
     setInserirNovoFilme,
@@ -362,5 +555,6 @@ module.exports = {
     setExcluirFilmes,
     getListarFilmes,
     setInserirCompra,
-    getBuscarFilme
+    getBuscarFilme,
+    getAllClassificacoes
 }

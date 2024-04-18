@@ -102,6 +102,58 @@ const insertFilme = async function (dadosFilme) {
     }
 }
 
+const insertGenero = async function (dadosGenero) {
+
+    let sql
+
+    try {
+        sql = `insert into tbl_genero (genero) 
+        values
+        (
+            '${dadosGenero.genero}'
+        );`
+
+        let result = await prisma .$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        
+    }
+}
+
+const InsertClassificacao = async function(dadosClassificacao) {
+
+    let sql
+
+    try {
+        sql = `insert into tbl_classificacao (
+            classificacao, 
+            caracteristicas, 
+            img_classificacao
+            ) values
+            ('${dadosClassificacao.classificacao}', '${dadosClassificacao.caracteristicas}', '${dadosClassificacao.img_classificacao}');
+            `
+
+            console.log(sql);
+
+            console.log('inserindo');
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(result) {
+                return result
+            } else {
+                return false
+            }
+    } catch (error) {
+        return false
+    }
+}
+
 const updateFilme = async function (id, dadosFilme) {
     //função para atualizar um filme no banco de dados
 
@@ -171,6 +223,8 @@ const updateFilme = async function (id, dadosFilme) {
     }
 }
 
+
+
 const deleteFilme = async function (id) {
     //função para excluir um filme no banco de dados
     try {
@@ -193,10 +247,57 @@ const deleteFilme = async function (id) {
 
 }
 
+const deleteGenero = async function (id) {
+
+    try {
+        
+        let sql = `delete from tbl_genero where id =${id}`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result) {
+            return true
+        } else {
+             return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteClassificacao = async function (id) {
+
+    try {
+        let checkSql = `select count(*) as count from tbl_filme where id_classificacao = ${id}`;
+        let checkResult = await prisma.$queryRawUnsafe(checkSql);
+
+        console.log(checkResult);
+        if(checkResult[0].count > 0) {
+            console.log('em uso');
+            return false   
+        } else {
+            let sql = `delete from tbl_classificacao where id =${id}`
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(result) {
+                return true
+            } else {
+                return false
+            }
+
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 const selectAllFilmes = async function () {
     //função para listar todos os filmes do banco de dados
 
-    let sql = 'select * from tbl_filme'
+    let sql = `SELECT tbl_filme.*, tbl_classificacao.classificacao
+    FROM tbl_filme
+    JOIN tbl_classificacao ON tbl_filme.id_classificacao = tbl_classificacao.id;`
 
     //$queryRawUnsafe(sql)
     //$queryRawUnsafe('select * from tbl_filme where nome = ' + variavel' )
@@ -207,6 +308,49 @@ const selectAllFilmes = async function () {
         return rsFilmes
     else
         return false
+}
+
+const selectAllGeneros = async function () {
+
+let sql = `select * from tbl_genero;`
+
+let rsgeneros = await prisma.$queryRawUnsafe(sql)
+
+if(rsgeneros.length > 0) {
+    return  rsgeneros
+} else {
+    return false
+}
+}
+
+const selectAllClassificacoes = async function () {
+
+    let sql = `select * from tbl_classificacao;`
+
+    let listarClassificacoes = await prisma.$queryRawUnsafe(sql)
+    
+    if(listarClassificacoes){
+        console.log(listarClassificacoes)
+        return listarClassificacoes
+    }
+
+}
+
+const selectAllSexos = async function () {
+
+    let sql = "select * from tbl_sexo;"
+
+    let rsSql = await prisma.$queryRawUnsafe(sql)
+
+    console.log(rsSql);
+
+    if(rsSql){
+        return rsSql
+    } else {
+        return false 
+    }
+
+
 }
 
 const selectUltimosIds = async function () {
@@ -306,6 +450,12 @@ const selectByIdFilme = async function (id) {
 }
 
 module.exports = {
+    selectAllSexos,
+    deleteClassificacao,
+    InsertClassificacao,
+    deleteGenero,
+    insertGenero,
+    selectAllGeneros,
     pegarUltimoId,
     selectByNameFilme,
     selectAllComprados,
@@ -315,5 +465,6 @@ module.exports = {
     insertCompra,
     deleteFilme,
     selectAllFilmes,
-    selectByIdFilme
+    selectByIdFilme,
+    selectAllClassificacoes
 }
