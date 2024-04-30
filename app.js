@@ -258,6 +258,34 @@ app.get('/v2/acmeFilmes/nacionalidades', cors(), async function(request, respons
     }
 })
 
+//ATOR - GET
+app.get('/v2/acmeFilmes/atores', cors(), async function(request, response){
+
+    let dadosAtores = await controllerFilmes.getAllAtores()
+
+    if(dadosAtores){
+        response.status(200)
+        response.json(dadosAtores)
+    } else {
+        response.status(404)
+        response.json({message: 'nenhum registro encontrado'})
+    }
+})
+
+//DIRETORES - GET
+app.get('/v2/acmeFilmes/diretores', cors(), async function(request, response){
+
+    let dadosDiretores = await controllerFilmes.getAllDiretores()
+
+    if(dadosDiretores){
+        response.status(200)
+        response.json(dadosDiretores)
+    } else {
+        response.status
+        response.json({message: 'nenhum registro encontrado'})
+    }
+})
+
 //GENERO - POST
 app.post('/v2/acmeFilmes/genero', cors(), bodyParserJSON, async function(request, response){
 
@@ -294,6 +322,21 @@ app.post('/v2/acmeFilmes/classificacao', cors(), bodyParserJSON, async function(
         response.json(resultDadosNovaClassificacao)
     } else {
         response.status(404)
+    }
+})
+
+//ATORES - POST
+app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, response){
+
+    let contentType = request.header('content-type')
+
+    let dadosBody = request.body
+
+    let resultDadosNovoAtor = await controllerFilmes.setInserirNovoAtor(dadosBody, contentType)
+
+    if(resultDadosNovoAtor){
+        response.status(200)
+        response.json()
     }
 })
 

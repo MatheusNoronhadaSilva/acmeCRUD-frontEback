@@ -395,6 +395,80 @@ const getAllNacionalidades = async function () {
     }
 }
 
+const getAllAtores = async function() {
+    let atoresJSON = {};
+
+    atoresJSON.atores = []
+
+    let dadosAtores = await filmesDAO.selectAllAtores();
+    let dadosSexos = await filmesDAO.selectAllSexos();
+
+    if (dadosAtores) {
+        for (let i = 0; i < dadosAtores.length; i++) {
+            let InfoAtor = dadosAtores[i];
+            console.log(InfoAtor.id);
+            const atorIdSexo = InfoAtor.id_sexo;
+            for (let j = 0; j < dadosSexos.length; j++) {
+                let sexo = dadosSexos[j];
+                if (atorIdSexo == sexo.id) {
+                    InfoAtor.sexo = sexo;
+                    delete InfoAtor.id_sexo;
+                    break; 
+                }
+            }
+
+            let dadosNacionalidades = await filmesDAO.selectNacionalidadeById(InfoAtor.id);
+            console.log(dadosNacionalidades);
+
+            InfoAtor.nacionalidade = dadosNacionalidades;
+
+            atoresJSON.atores.push(InfoAtor);
+        }
+
+        atoresJSON.status_code = 200;
+        return atoresJSON;
+    } else {
+        return false;
+    }
+};
+
+const getAllDiretores  = async function() {
+    let diretoresJSON = {};
+
+    diretoresJSON.diretores = []
+
+    let dadosDiretores = await filmesDAO.selectAllDiretores();
+    let dadosSexos = await filmesDAO.selectAllSexos();
+
+    if (dadosDiretores) {
+        for (let i = 0; i < dadosDiretores.length; i++) {
+            let InfoDiretor = dadosDiretores[i];
+            const diretorIdSexo = InfoDiretor.id_sexo;
+            for (let j = 0; j < dadosSexos.length; j++) {
+                let sexo = dadosSexos[j];
+                if (diretorIdSexo == sexo.id) {
+                    InfoDiretor.sexo = sexo;
+                    delete InfoDiretor.id_sexo;
+                    break; 
+                }
+            }
+
+            let dadosNacionalidades = await filmesDAO.selectNacionalidadeById(InfoDiretor.id);
+            console.log(dadosNacionalidades);
+
+            InfoDiretor.nacionalidade = dadosNacionalidades;
+
+            diretoresJSON.diretores.push(InfoDiretor);
+        }
+
+        diretoresJSON.status_code = 200;
+        return diretoresJSON;
+    } else {
+        return false;
+    }
+}
+
+
 
 const getUltimosPedidos = async function () {
 
@@ -540,6 +614,8 @@ const getBuscarFilme = async function (id) {
 }
 
 module.exports = {
+    getAllDiretores,
+    getAllAtores,
     getAllNacionalidades,
     getAllSexos,
     setExcluirClassificacao,

@@ -353,6 +353,65 @@ const selectAllSexos = async function () {
 
 }
 
+const selectAllAtores = async function () {
+
+    let sql = `select * from tbl_ator;`
+
+    let rssql = await prisma.$queryRawUnsafe(sql)
+
+    console.log('atores enviados');
+    if(rssql) {
+        return rssql
+    } else {
+        return false
+    }
+}
+
+const selectAllDiretores = async function () {
+
+    let sql = `select * from tbl_diretor`
+
+    let rssql = await prisma.$queryRawUnsafe(sql)
+
+    if(rssql) {
+        return rssql
+    } else {
+        return false
+    }
+}
+
+const selectNacionalidadeById = async function(id) {
+
+
+    let sql = `SELECT tbl_ator_nacionalidade.id_ator, tbl_nacionalidade.nacionalidade
+    FROM tbl_ator_nacionalidade
+    JOIN tbl_nacionalidade ON tbl_ator_nacionalidade.id_nacionalidade = tbl_nacionalidade.id where tbl_ator_nacionalidade.id_ator = ${id};`
+
+    let rssql = await prisma.$queryRawUnsafe(sql)
+
+    if(rssql) {
+        return rssql
+    } else {
+        return false
+    }
+}
+
+const selectSexoById = async function (id) {
+
+    let sql = `SELECT tbl_sexo.*
+    FROM tbl_sexo
+    WHERE id = ${id};`
+
+    let rssql = await prisma.$queryRawUnsafe(sql)
+
+    console.log('sexo enviado');
+    if(rssql) {
+        return rssql
+    } else {
+        return false
+    }
+}
+
 const selectUltimosIds = async function () {
 
     let sql_id
@@ -450,6 +509,10 @@ const selectByIdFilme = async function (id) {
 }
 
 module.exports = {
+    selectAllDiretores,
+    selectSexoById,
+    selectNacionalidadeById,
+    selectAllAtores,
     selectAllSexos,
     deleteClassificacao,
     InsertClassificacao,
