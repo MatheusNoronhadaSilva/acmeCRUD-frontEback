@@ -102,29 +102,6 @@ const insertFilme = async function (dadosFilme) {
     }
 }
 
-const insertGenero = async function (dadosGenero) {
-
-    let sql
-
-    try {
-        sql = `insert into tbl_genero (genero) 
-        values
-        (
-            '${dadosGenero.genero}'
-        );`
-
-        let result = await prisma .$executeRawUnsafe(sql)
-
-        if(result){
-            return result
-        } else {
-            return false
-        }
-    } catch (error) {
-        
-    }
-}
-
 const InsertClassificacao = async function(dadosClassificacao) {
 
     let sql
@@ -247,24 +224,6 @@ const deleteFilme = async function (id) {
 
 }
 
-const deleteGenero = async function (id) {
-
-    try {
-        
-        let sql = `delete from tbl_genero where id =${id}`
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if(result) {
-            return true
-        } else {
-             return false
-        }
-    } catch (error) {
-        return false
-    }
-}
-
 const deleteClassificacao = async function (id) {
 
     try {
@@ -295,9 +254,7 @@ const deleteClassificacao = async function (id) {
 const selectAllFilmes = async function () {
     //função para listar todos os filmes do banco de dados
 
-    let sql = `SELECT tbl_filme.*, tbl_classificacao.classificacao
-    FROM tbl_filme
-    JOIN tbl_classificacao ON tbl_filme.id_classificacao = tbl_classificacao.id;`
+    let sql = `SELECT * FROM tbl_filme;`
 
     //$queryRawUnsafe(sql)
     //$queryRawUnsafe('select * from tbl_filme where nome = ' + variavel' )
@@ -308,19 +265,6 @@ const selectAllFilmes = async function () {
         return rsFilmes
     else
         return false
-}
-
-const selectAllGeneros = async function () {
-
-let sql = `select * from tbl_genero;`
-
-let rsgeneros = await prisma.$queryRawUnsafe(sql)
-
-if(rsgeneros.length > 0) {
-    return  rsgeneros
-} else {
-    return false
-}
 }
 
 const selectAllClassificacoes = async function () {
@@ -336,56 +280,9 @@ const selectAllClassificacoes = async function () {
 
 }
 
-const selectAllSexos = async function () {
-
-    let sql = "select * from tbl_sexo;"
-
-    let rsSql = await prisma.$queryRawUnsafe(sql)
-
-    console.log(rsSql);
-
-    if(rsSql){
-        return rsSql
-    } else {
-        return false 
-    }
-
-
-}
-
-const selectAllAtores = async function () {
-
-    let sql = `select * from tbl_ator;`
-
-    let rssql = await prisma.$queryRawUnsafe(sql)
-
-    console.log('atores enviados');
-    if(rssql) {
-        return rssql
-    } else {
-        return false
-    }
-}
-
 const selectAllDiretores = async function () {
 
     let sql = `select * from tbl_diretor`
-
-    let rssql = await prisma.$queryRawUnsafe(sql)
-
-    if(rssql) {
-        return rssql
-    } else {
-        return false
-    }
-}
-
-const selectNacionalidadeById = async function(id) {
-
-
-    let sql = `SELECT tbl_ator_nacionalidade.id_ator, tbl_nacionalidade.nacionalidade
-    FROM tbl_ator_nacionalidade
-    JOIN tbl_nacionalidade ON tbl_ator_nacionalidade.id_nacionalidade = tbl_nacionalidade.id where tbl_ator_nacionalidade.id_ator = ${id};`
 
     let rssql = await prisma.$queryRawUnsafe(sql)
 
@@ -511,14 +408,8 @@ const selectByIdFilme = async function (id) {
 module.exports = {
     selectAllDiretores,
     selectSexoById,
-    selectNacionalidadeById,
-    selectAllAtores,
-    selectAllSexos,
     deleteClassificacao,
     InsertClassificacao,
-    deleteGenero,
-    insertGenero,
-    selectAllGeneros,
     pegarUltimoId,
     selectByNameFilme,
     selectAllComprados,

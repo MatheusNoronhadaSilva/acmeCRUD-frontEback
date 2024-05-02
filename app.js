@@ -39,6 +39,12 @@ app.use(cors())
 /*********************Import dos arquivos de Controller do projeto **********************/
 
 const controllerFilmes = require('./controller/controller_filmes.js')
+const controllerAtores = require('./controller/controller_atores.js')
+const controllerNacionalidades = require('./controller/controller_nacionalidades.js')
+const controllerSexos = require('./controller/controller_sexos.js')
+const controllerGeneros = require('./controller/controller_generos.js')
+const controllerDiretores = require('./controller/controller_diretores.js')
+const controllerCategorias = require('./controller/controller_categorias.js')
 
 /************************************ */
 
@@ -59,6 +65,30 @@ app.get('/v1/acmeFilmes/filmes', cors(), (request, response) => {
         res.json(listaFilmes)
     } else {
         res.status(404).json({ erro: 'nenhum filme foi encontrado' })
+    }
+})
+
+app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
+
+    let idFilme = req.params.id
+    let controleFilmesId = require('./controller/funcoes')
+    const listaFilmesId = controleFilmesId.getListaFilmeId(idFilme)
+    console.log(listaFilmesId)
+    if (listaFilmesId) {
+        res.json(listaFilmesId)
+    } else {
+        res.status(404).json({ erro: 'nenhum filme com esse id foi encontrado' })
+    }
+})
+
+app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
+
+    let controleNomes = require('./controller/funcoes')
+    const listaNomes = controleNomes.getListaFilmesNomes()
+    if (listaNomes) {
+        res.json(listaNomes)
+    } else {
+        res.status(404).json({ erro: 'nenhum nome de filme foi encontrado' })
     }
 })
 
@@ -189,23 +219,10 @@ app.put('/v2/acmeFilmes/filme/atualizar/:id', cors(), bodyParserJSON, async func
     response.status(dadosFilme.status_code)
 })
 
-app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
-
-    let idFilme = req.params.id
-    let controleFilmesId = require('./controller/funcoes')
-    const listaFilmesId = controleFilmesId.getListaFilmeId(idFilme)
-    console.log(listaFilmesId)
-    if (listaFilmesId) {
-        res.json(listaFilmesId)
-    } else {
-        res.status(404).json({ erro: 'nenhum filme com esse id foi encontrado' })
-    }
-})
-
 // GENERO - GET
 app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
 
-    let dadosGeneros = await controllerFilmes.getAllgeneros()
+    let dadosGeneros = await controllerGeneros.getAllgeneros()
 
     if (dadosGeneros) {
         response.json(dadosGeneros)
@@ -233,7 +250,7 @@ app.get('/v2/acmeFilmes/classificacoes', cors(), async function(request, respons
 //SEXO - GET
 app.get('/v2/acmeFilmes/sexos', cors(), async function(request, response){
 
-    let dadosSexos = await controllerFilmes.getAllSexos()
+    let dadosSexos = await controllerSexos.getAllSexos()
 
     if(dadosSexos) {
         response.status(200)
@@ -247,7 +264,7 @@ app.get('/v2/acmeFilmes/sexos', cors(), async function(request, response){
 //NACIONALIDADES - GET
 app.get('/v2/acmeFilmes/nacionalidades', cors(), async function(request, response){
 
-    let dadosNacionalidades = await controllerFilmes.getAllNacionalidades()
+    let dadosNacionalidades = await controllerNacionalidades.getAllNacionalidades()
 
     if(dadosNacionalidades) {
         response.status(200)
@@ -261,7 +278,7 @@ app.get('/v2/acmeFilmes/nacionalidades', cors(), async function(request, respons
 //ATOR - GET
 app.get('/v2/acmeFilmes/atores', cors(), async function(request, response){
 
-    let dadosAtores = await controllerFilmes.getAllAtores()
+    let dadosAtores = await controllerAtores.getAllAtores()
 
     if(dadosAtores){
         response.status(200)
@@ -295,7 +312,7 @@ app.post('/v2/acmeFilmes/genero', cors(), bodyParserJSON, async function(request
 
     let dadosBody = request.body
 
-    let resultDadosNovoGenero = await controllerFilmes.setInserirNovogenero(dadosBody, contentType)
+    let resultDadosNovoGenero = await controllerGeneros.setInserirNovogenero(dadosBody, contentType)
     console.log(resultDadosNovoGenero);
 
     if(resultDadosNovoGenero){
@@ -332,11 +349,14 @@ app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, 
 
     let dadosBody = request.body
 
-    let resultDadosNovoAtor = await controllerFilmes.setInserirNovoAtor(dadosBody, contentType)
+    let resultDadosNovoAtor = await controllerAtores.setInserirNovoAtor(dadosBody, contentType)
 
     if(resultDadosNovoAtor){
         response.status(200)
-        response.json()
+        response.json({message: 'postado com sucesso'})
+    } else {
+        response.status(404)
+        response.json({message: 'erro'})
     }
 })
 
@@ -345,7 +365,7 @@ app.delete('/v2/acmeFilmes/genero/deletar/:id', cors(), async function(request, 
 
     let idGenero = request.params.id
 
-    let resultGenero = await controllerFilmes.setExcluirGenero(idGenero)
+    let resultGenero = await controllerGeneros.setExcluirGenero(idGenero)
 
     if(resultGenero){
         response.status(200)
@@ -370,16 +390,21 @@ app.delete('/v2/acmeFilmes/classificacao/deletar/:id', cors(), async function(re
     }
 })
 
-// app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
+//ATOR - DELETE
+app.delete('/v2/acmeFilmes/ator/deletar/:id', cors(), async function(request, response){
 
-//     let controleNomes = require('./controller/funcoes')
-//     const listaNomes = controleNomes.getListaFilmesNomes()
-//     if (listaNomes) {
-//         res.json(listaNomes)
-//     } else {
-//         res.status(404).json({ erro: 'nenhum nome de filme foi encontrado' })
-//     }
-// })
+    let idDeletar = request.params.id
+
+    let resultAtor = await controllerAtores.setExcluirAtor(idDeletar)
+
+    if(resultAtor){
+        response.status(200)
+        response.json(resultAtor)
+    } else {
+        response.status(404)
+        response.json({message: 'falha ao deletar'})
+    }
+})
 
 const port = process.env.PORT || 8080
 app.listen(port, () => {
