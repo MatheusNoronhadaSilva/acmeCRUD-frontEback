@@ -64,9 +64,102 @@ const selectAllGeneros = async function () {
     } else {
         return false
     }
+}
+
+const selectGenerosFilmeById = async function (idFilme) {
+
+    try {
+        
+        let sql = `SELECT tbl_genero.*
+        FROM tbl_genero
+        JOIN tbl_filme_genero ON tbl_genero.id = tbl_filme_genero.id_genero
+        WHERE tbl_filme_genero.id_filme = ${idFilme};`
+
+        console.log(sql);
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        
     }
+}
+
+const setInserirRelacaoGeneroFilme = async function (idFilme, arrayIdGenero) {
+
+    try {
+
+        console.log('oioiiooioioiioioiioiiiio');
+        console.log(idFilme);
+        
+        for(let i = 0; i < arrayIdGenero.length; i++) {
+
+            console.log(arrayIdGenero);
+            let sql =`insert into tbl_filme_genero (id_filme, id_genero) values
+            (${idFilme},${arrayIdGenero[i]});`
+
+            console.log(sql);
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(result == false){
+                return false
+            }
+        }
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteRelacaoGeneroFilmeByIdFilme = async function (idFilme){
+
+    try {
+        
+        let sql = `DELETE FROM tbl_filme_genero WHERE id_filme = ${idFilme};`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteRelacaoGeneroFilmeByIdGenero = async function (idgenero) {
+
+    try {
+        
+        let sql = `DELETE FROM tbl_filme_genero WHERE id_genero = ${idgenero};`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+
 
 module.exports = {
+    deleteRelacaoGeneroFilmeByIdGenero,
+    deleteRelacaoGeneroFilmeByIdFilme,
+    setInserirRelacaoGeneroFilme,
+    selectGenerosFilmeById,
     selectAllGeneros,
     insertGenero,
     deleteGenero

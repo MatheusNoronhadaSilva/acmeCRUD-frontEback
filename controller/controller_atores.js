@@ -9,7 +9,7 @@ const message = require('../module/config.js')
 
 //import do arquivo responsável pela interação com o BD (model)
 const atoresDAO = require('../model/DAO/atores.js')
-const nacionalidadesDAO = require('../model/DAO/nacionalidadesDAO.js')
+const nacionalidadesDAO = require('../model/DAO/nacionalidades.js')
 const sexosDAO = require('../model/DAO/sexos.js')
 
 const setInserirNovoAtor = async function (dadosAtor, contentType) {
@@ -18,7 +18,6 @@ const setInserirNovoAtor = async function (dadosAtor, contentType) {
         
         if(String(contentType).toLowerCase() == 'application/json') {
 
-            let novoAtorJSON = {}
             let infoAtor = {}
             let infoAtorNacionalidade = {}
 
@@ -104,7 +103,7 @@ const getAllAtores = async function() {
                 }
             }
 
-            let dadosNacionalidades = await nacionalidadesDAO.selectNacionalidadeById(InfoAtor.id);
+            let dadosNacionalidades = await nacionalidadesDAO.selectNacionalidadeAtorById(InfoAtor.id);
 
             InfoAtor.nacionalidade = dadosNacionalidades;
 
@@ -132,7 +131,7 @@ const setExcluirAtor = async function(id) {
         let resultRelacaoNacionalidadeAtor = await nacionalidadesDAO.deleteRelacaoNacionalidadeAtor(idAtor)
         console.log(resultRelacaoNacionalidadeAtor);
 
-        if(resultRelacaoNacionalidadeAtor == true) {
+        if(resultRelacaoNacionalidadeAtor) {
 
             let resultAtor = await atoresDAO.deleteAtor(idAtor)
 
@@ -142,7 +141,7 @@ const setExcluirAtor = async function(id) {
 
             }
         } else if (resultRelacaoNacionalidadeAtor == false) {
-            return message.ERROR_NOT_FOUND //500
+            return message.ERROR_NOT_FOUND //404
         } else {
             return message.ERROR_INTERVAL_SERVER_DB
         }

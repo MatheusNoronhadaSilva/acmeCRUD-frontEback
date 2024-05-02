@@ -43,6 +43,7 @@ const controllerAtores = require('./controller/controller_atores.js')
 const controllerNacionalidades = require('./controller/controller_nacionalidades.js')
 const controllerSexos = require('./controller/controller_sexos.js')
 const controllerGeneros = require('./controller/controller_generos.js')
+const controllerClassificacoes = require('./controller/controller.classificacoes.js')
 const controllerDiretores = require('./controller/controller_diretores.js')
 const controllerCategorias = require('./controller/controller_categorias.js')
 
@@ -156,8 +157,13 @@ app.get('/v2/acmeFilmes/filmes/filtro', cors(), async function (req, response) {
     console.log(nome)
     const listaNomes = await controllerFilmes.getNomeFilme(nome)
 
-    response.status(listaNomes.status_code)
-    response.json(listaNomes)
+    if(listaNomes){
+        response.status(200)
+        response.json(listaNomes)
+    } else {
+        response.status(404)
+        response.json('nenhum registro encontrado')
+    }
 })
 
 
@@ -198,8 +204,13 @@ app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request,
     //encaminhandoos dados para o controler para enviar para o DAO
     let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody, contentType)
 
-    response.status(resultDadosNovoFilme.status_code)
-    response.json(resultDadosNovoFilme)
+    if(resultDadosNovoFilme){
+        response.status(resultDadosNovoFilme.status_code)
+        response.json(resultDadosNovoFilme)
+    } else {
+        response.status(200)
+        response.json(resultDadosNovoFilme)
+    }
 })
 
 //PUT
@@ -236,7 +247,7 @@ app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
 //CLASSIFICAÇÃO - GET
 app.get('/v2/acmeFilmes/classificacoes', cors(), async function(request, response){
 
-    let dadosClassificacao = await controllerFilmes.getAllClassificacoes()
+    let dadosClassificacao = await controllerClassificacoes.getAllClassificacoes()
 
     if(dadosClassificacao){
         response.status(200)
@@ -292,7 +303,7 @@ app.get('/v2/acmeFilmes/atores', cors(), async function(request, response){
 //DIRETORES - GET
 app.get('/v2/acmeFilmes/diretores', cors(), async function(request, response){
 
-    let dadosDiretores = await controllerFilmes.getAllDiretores()
+    let dadosDiretores = await controllerDiretores.getAllDiretores()
 
     if(dadosDiretores){
         response.status(200)
@@ -358,6 +369,15 @@ app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, 
         response.status(404)
         response.json({message: 'erro'})
     }
+})
+
+app.post('/v2/acmeFilmes/diretor', cors(), bodyParserJSON, async function(request, response){
+
+    let contentType = request.header('content-type')
+
+    let dadosBody = request.body
+
+    let resultDadosNovoDiretor = await controllerDiretores.setInserirNovoDiretor(dados)
 })
 
 //GENERO - DELETE

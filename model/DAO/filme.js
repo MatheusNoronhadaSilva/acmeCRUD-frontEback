@@ -22,8 +22,6 @@ const pegarUltimoId = async function () {
 
     let pegarId = await prisma.$queryRawUnsafe(sql_id)
 
-    console.log(pegarId);
-
     if(pegarId) {
         return pegarId
     } else {
@@ -49,7 +47,9 @@ const insertFilme = async function (dadosFilme) {
                 data_relancamento, 
                 foto_capa, 
                 valor_alugar,
-                valor_comprar
+                valor_comprar,
+                id_classificacao,
+                original_SitePirata
     ) values (
                 '${dadosFilme.nome}',
                 '${dadosFilme.sinopse}',
@@ -58,7 +58,9 @@ const insertFilme = async function (dadosFilme) {
                 '${dadosFilme.data_relancamento}',
                 '${dadosFilme.foto_capa}',
                 '${dadosFilme.valor_alugar}',
-                '${dadosFilme.valor_comprar}'
+                '${dadosFilme.valor_comprar}',
+                '${dadosFilme.id_classificacao}',
+                '${dadosFilme.original_SitePirata}'
     )`;
            } else {
             // dadosFilme.nome = 'teste'
@@ -69,7 +71,9 @@ const insertFilme = async function (dadosFilme) {
                 data_relancamento, 
                 foto_capa, 
                 valor_alugar,
-                valor_comprar
+                valor_comprar,
+                id_classificacao,
+                original_SitePirata
     ) values (
                 '${dadosFilme.nome}',
                 '${dadosFilme.sinopse}',
@@ -78,7 +82,9 @@ const insertFilme = async function (dadosFilme) {
                 null,
                 '${dadosFilme.foto_capa}',
                 '${dadosFilme.valor_alugar}',
-                '${dadosFilme.valor_comprar}'
+                '${dadosFilme.valor_comprar}',
+                '${dadosFilme.id_classificacao}',
+                '${dadosFilme.original_SitePirata}'
     )`;
            }
 
@@ -267,32 +273,6 @@ const selectAllFilmes = async function () {
         return false
 }
 
-const selectAllClassificacoes = async function () {
-
-    let sql = `select * from tbl_classificacao;`
-
-    let listarClassificacoes = await prisma.$queryRawUnsafe(sql)
-    
-    if(listarClassificacoes){
-        console.log(listarClassificacoes)
-        return listarClassificacoes
-    }
-
-}
-
-const selectAllDiretores = async function () {
-
-    let sql = `select * from tbl_diretor`
-
-    let rssql = await prisma.$queryRawUnsafe(sql)
-
-    if(rssql) {
-        return rssql
-    } else {
-        return false
-    }
-}
-
 const selectSexoById = async function (id) {
 
     let sql = `SELECT tbl_sexo.*
@@ -406,7 +386,6 @@ const selectByIdFilme = async function (id) {
 }
 
 module.exports = {
-    selectAllDiretores,
     selectSexoById,
     deleteClassificacao,
     InsertClassificacao,
@@ -420,5 +399,4 @@ module.exports = {
     deleteFilme,
     selectAllFilmes,
     selectByIdFilme,
-    selectAllClassificacoes
 }

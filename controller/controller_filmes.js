@@ -9,6 +9,10 @@ const message = require('../module/config.js')
 
 //import do arquivo responsável pela interação com o BD (model)
 const filmesDAO = require('../model/DAO/filme.js')
+const classificacoesDAO = require('../model/DAO/classificacoes.js')
+const diretoresDAO = require('../model/DAO/diretores.js')
+const atoresDAO = require('../model/DAO/atores.js')
+const  generosDAO = require('../model/DAO/generos.js')
 
 const setInserirNovoFilme = async function (dadosFilme, contentType) {
     //função para inserir um novo filme
@@ -21,13 +25,20 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
             let novoFilmeJSON = {}
 
             console.log(dadosFilme);
+            console.log(dadosFilme.original_SitePirata);
     
             if (dadosFilme.nome == '' || dadosFilme.nome == undefined || dadosFilme.nome == null || dadosFilme.nome.length > 80 ||
                 dadosFilme.sinopse == '' || dadosFilme.sinopse == undefined || dadosFilme.sinopse == null || dadosFilme.sinopse.length > 65000 ||
                 dadosFilme.duracao == '' || dadosFilme.duracao == undefined || dadosFilme.duracao == null || dadosFilme.duracao.length > 8 ||
                 dadosFilme.data_lancamento == '' || dadosFilme.data_lancamento == undefined || dadosFilme.data_lancamento == null || dadosFilme.data_lancamento.length != 10 ||
-                dadosFilme.foto_capa == '' || dadosFilme.foto_capa == undefined || dadosFilme.foto_capa == null || dadosFilme.foto_capa > 200 ||
-                dadosFilme.valor_alugar.length > 6 || dadosFilme.valor_comprar.length > 6
+                dadosFilme.foto_capa == '' || dadosFilme.foto_capa == undefined || dadosFilme.foto_capa == null || dadosFilme.foto_capa > 300 ||
+                dadosFilme.valor_alugar =='' || dadosFilme.valor_alugar == undefined || dadosFilme.valor_alugar == null || dadosFilme.valor_alugar.length > 6 || 
+                dadosFilme.valor_comprar == '' || dadosFilme.valor_comprar == undefined || dadosFilme.valor_comprar == null || dadosFilme.valor_comprar.length > 6 ||
+                dadosFilme.id_classificacao == '' || dadosFilme.id_classificacao == undefined || dadosFilme.id_classificacao == null || ![1,2,3,4,5,6].includes(dadosFilme.id_classificacao) ||
+                dadosFilme.original_SitePirata != 1 && dadosFilme.original_SitePirata != 0 ||
+                dadosFilme.diretores[0] == '' || dadosFilme.diretores[0] == undefined || dadosFilme.diretores[0] == null || dadosFilme.diretores[0] == 0 ||
+                dadosFilme.atores[0] == '' || dadosFilme.atores[0] == undefined || dadosFilme.atores[0] == null || dadosFilme.atores[0] == 0 ||
+                dadosFilme.generos[0] == '' || dadosFilme.generos[0] == undefined || dadosFilme.generos[0] == null || dadosFilme.generos[0] == 0 
             ) {
                 return message.ERROR_REQUIRED_FIELDS //400
             } else {
@@ -55,11 +66,18 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
                     // encamiha para o DAO para inserir no banco
                     let novoFilme = await filmesDAO.insertFilme(dadosFilme)
                     let idPego = await filmesDAO.pegarUltimoId()
+                    console.log('array: ' + dadosFilme.atores);
+                    let novaRelacaoAtorFilme = await atoresDAO.setinserirRelacaoAtorFilme(idPego[0].id, dadosFilme.atores)
+                    let novaRelacaoDiretorFilme = await diretoresDAO.setInserirRelacaoDiretorFilme(idPego[0].id, dadosFilme.diretores)
+                    let novaRelacaogeneroFilme = await generosDAO.setInserirRelacaoGeneroFilme(idPego[0].id, dadosFilme.generos)
     
                     console.log(novoFilme);
                     console.log(idPego);
+                    console.log(novaRelacaoAtorFilme);
+                    console.log(novaRelacaoDiretorFilme);
+                    console.log(novaRelacaogeneroFilme);
     
-                    if (novoFilme && idPego) {
+                    if (novoFilme && idPego && novaRelacaoAtorFilme && novaRelacaoDiretorFilme && novaRelacaogeneroFilme) {
                         const id = idPego[0].id
                         console.log(id);
                         //retorno dos dados
@@ -206,12 +224,15 @@ const setExcluirFilmes = async function (id) {
         return message.ERROR_INVALID_ID //400
     } else {
 
+        let relacaoAtorFilme = await atoresDAO.deleteRelacaoAtorFilmeByIdFilme(idFilme)
+        let relacaoDiretorFilme = await diretoresDAO.deleteRelacaoDiretorFilmeByIdFilme(idFilme)
+        let relacaoGeneroFilme = await generosDAO.deleteRelacaoGeneroFilmeByIdFilme(idFilme)
         let dadosFilme = await filmesDAO.deleteFilme(idFilme)
 
         console.log(dadosFilme);
 
         //validação 
-        if (dadosFilme == true) {
+        if (dadosFilme && relacaoAtorFilme && relacaoDiretorFilme && relacaoGeneroFilme) {
 
             return message.SUCESS_DELETE_ITEM
 
@@ -257,37 +278,56 @@ const getListarFilmes = async function () {
     //cria um objeto JSON
     let filmesJSON = {};
 
+    filmesJSON.filmes = []
+
     //chama a função do DAO que retorna os filmes do DB
     let dadosFilmes = await filmesDAO.selectAllFilmes()
+    let dadosClassificacao = await classificacoesDAO.selectAllClassificacoes()
+
+    console.log(dadosClassificacao);
 
     //validação para verificar se o DAO retornou dados
-    if (dadosFilmes) {
-        //cria o JSON
-        filmesJSON.filmes = dadosFilmes
-        filmesJSON.quantidade = dadosFilmes.length
-        filmesJSON.status_code = 200
+    if(dadosFilmes){
+        for(let i = 0; i < dadosFilmes.length; i++){
+
+            let infoFilme = dadosFilmes[i]
+            const filmeIdClassificacao = infoFilme.id_classificacao
+
+            let dadosDiretores = await diretoresDAO.selectDiretorFilmeById(infoFilme.id)
+            let dadosAtores = await atoresDAO.selectAtoresFilmeById(infoFilme.id)
+            let dadosGeneros = await generosDAO.selectGenerosFilmeById(infoFilme.id)
+
+            infoFilme.diretores = dadosDiretores
+            infoFilme.atores = dadosAtores
+            infoFilme.generos = dadosGeneros
+
+
+            for(let j = 0; j < dadosClassificacao.length; j++) {
+                let classificacao = dadosClassificacao[j]
+                if(filmeIdClassificacao == classificacao.id){
+                    infoFilme.classificacao = classificacao
+                    delete infoFilme.id_classificacao
+                    break;
+                }
+            }
+
+            filmesJSON.filmes.push(infoFilme)
+        }
 
         return filmesJSON
     } else {
-        return false
+        return false 
     }
-}
+    // if (dadosFilmes) {
+    //     //cria o JSON
+    //     filmesJSON.filmes = dadosFilmes
+    //     filmesJSON.quantidade = dadosFilmes.length
+    //     filmesJSON.status_code = 200
 
-const getAllClassificacoes = async function () {
-
-    let classificacaoJSON = {}
-
-    let dadosClassificacao = await filmesDAO.selectAllClassificacoes()
-
-    if(dadosClassificacao) {
-        classificacaoJSON.classificacao = dadosClassificacao
-        classificacaoJSON.quantidade - dadosClassificacao.length
-        classificacaoJSON.status_code = 200
-
-        return classificacaoJSON
-    } else {
-        return false
-    }
+    //     return filmesJSON
+    // } else {
+    //     return false
+    // }
 }
 
 const getAllNacionalidades = async function () {
@@ -307,43 +347,6 @@ const getAllNacionalidades = async function () {
     }
 }
 
-
-
-const getAllDiretores  = async function() {
-    let diretoresJSON = {};
-
-    diretoresJSON.diretores = []
-
-    let dadosDiretores = await filmesDAO.selectAllDiretores();
-    let dadosSexos = await filmesDAO.selectAllSexos();
-
-    if (dadosDiretores) {
-        for (let i = 0; i < dadosDiretores.length; i++) {
-            let InfoDiretor = dadosDiretores[i];
-            const diretorIdSexo = InfoDiretor.id_sexo;
-            for (let j = 0; j < dadosSexos.length; j++) {
-                let sexo = dadosSexos[j];
-                if (diretorIdSexo == sexo.id) {
-                    InfoDiretor.sexo = sexo;
-                    delete InfoDiretor.id_sexo;
-                    break; 
-                }
-            }
-
-            let dadosNacionalidades = await filmesDAO.selectNacionalidadeById(InfoDiretor.id);
-            console.log(dadosNacionalidades);
-
-            InfoDiretor.nacionalidade = dadosNacionalidades;
-
-            diretoresJSON.diretores.push(InfoDiretor);
-        }
-
-        diretoresJSON.status_code = 200;
-        return diretoresJSON;
-    } else {
-        return false;
-    }
-}
 
 
 
@@ -417,33 +420,70 @@ const getNomeFilme = async function (nome) {
 
     let nomeFilmeJSON = {}
 
+    nomeFilmeJSON.filmes = []
+    nomeFilmeJSON.filmes.diretores = []
+    nomeFilmeJSON.filmes.atores = []
+
     if (nome == '' || nome == undefined) {
         return message.ERROR_INVALID_ID //400
     } else {
 
         let dadosNomeFilme = await filmesDAO.selectByNameFilme(nome)
 
-        if (dadosNomeFilme) {
+        console.log(dadosNomeFilme);
+        let dadosClassificacao = await classificacoesDAO.selectAllClassificacoes()
 
-            console.log('verificação');
+        if(dadosNomeFilme){
+            for(let i = 0; i < dadosNomeFilme.length; i++){
 
-            if (dadosNomeFilme.length > 0) {
+                let infoFilme = dadosNomeFilme[i]
+                const filmeIdClassificacao = infoFilme.id_classificacao
 
-                nomeFilmeJSON.filmes = dadosNomeFilme
-                nomeFilmeJSON.quantidade = dadosNomeFilme.length
-                nomeFilmeJSON.status_code = 200
+                let dadosDiretores = await diretoresDAO.selectDiretorFilmeById(dadosNomeFilme[i].id)
+                let dadosAtores = await atoresDAO.selectAtoresFilmeById(dadosNomeFilme[i].id)
+                let dadosGeneros = await generosDAO.selectGenerosFilmeById(dadosNomeFilme[i].id)
 
-                return nomeFilmeJSON
+                infoFilme.diretores = dadosDiretores
+                infoFilme.atores = dadosAtores
+                infoFilme.generos = dadosGeneros
 
-            } else {
-
-                return message.ERROR_NOT_FOUND
+                for(let j = 0; j < dadosClassificacao.length; j++) {
+                    let classificacao = dadosClassificacao[j]
+                    if(filmeIdClassificacao == classificacao.id){
+                        infoFilme.classificacao = classificacao
+                        delete infoFilme.id_classificacao
+                        break;
+                    }
+                }
+    
+                nomeFilmeJSON.filmes.push(infoFilme)
             }
+    
+            return nomeFilmeJSON
         } else {
-
-            return message.ERROR_INTERVAL_SERVER_DB //500
-
+            return false 
         }
+        // if (dadosNomeFilme) {
+
+        //     console.log('verificação');
+
+        //     if (dadosNomeFilme.length > 0) {
+
+        //         nomeFilmeJSON.filmes = dadosNomeFilme
+        //         nomeFilmeJSON.quantidade = dadosNomeFilme.length
+        //         nomeFilmeJSON.status_code = 200
+
+        //         return nomeFilmeJSON
+
+        //     } else {
+
+        //         return message.ERROR_NOT_FOUND
+        //     }
+        // } else {
+
+        //     return message.ERROR_INTERVAL_SERVER_DB //500
+
+        // }
     }
 }
 
@@ -460,13 +500,22 @@ const getBuscarFilme = async function (id) {
     } else {
 
         let dadosFilme = await filmesDAO.selectByIdFilme(idFilme)
+        let dadosDiretores = await diretoresDAO.selectDiretorFilmeById(idFilme)
+        let dadosAtores = await atoresDAO.selectAtoresFilmeById(idFilme)
+        let dadosGeneros = await generosDAO.selectGenerosFilmeById(idFilme)
 
         //validação 
         if (dadosFilme) {
 
             if (dadosFilme.length > 0) {
 
-                filmeJSON.filme = dadosFilme;
+                let infoFilme = dadosFilme[0]
+
+                infoFilme.diretores = dadosDiretores
+                infoFilme.atores = dadosAtores
+                infoFilme.generos = dadosGeneros
+
+                filmeJSON.filme = infoFilme;
                 filmeJSON.status_code = 200
 
                 return filmeJSON
@@ -491,7 +540,6 @@ const getBuscarFilme = async function (id) {
 }
 
 module.exports = {
-    getAllDiretores,
     getAllNacionalidades,
     setExcluirClassificacao,
     setInserirNovaClassificacao,
@@ -504,5 +552,4 @@ module.exports = {
     getListarFilmes,
     setInserirCompra,
     getBuscarFilme,
-    getAllClassificacoes
 }

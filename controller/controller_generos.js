@@ -17,9 +17,11 @@ const setExcluirGenero = async function (id) {
     if( idGenero == '' || idGenero == undefined ||isNaN(idGenero)) {
         return message.ERROR_INVALID_ID //400
     } else {
+
+        let relacaogeneroFilme = await generosDAO.deleteRelacaoGeneroFilmeByIdGenero(idGenero)
         let resultGenero = await generosDAO.deleteGenero(idGenero)
 
-        if(resultGenero == true) {
+        if(resultGenero && relacaogeneroFilme) {
             return message.SUCESS_DELETE_ITEM
         } else if (resultGenero == false) {
             return message.ERROR_NOT_FOUND //500

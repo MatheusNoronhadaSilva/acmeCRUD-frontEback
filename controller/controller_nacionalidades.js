@@ -8,7 +8,7 @@
 const message = require('../module/config.js')
 
 //import do arquivo responsável pela interação com o BD (model)
-const nacionalidadesDAO = require('../model/DAO/nacionalidadesDAO.js')
+const nacionalidadesDAO = require('../model/DAO/nacionalidades.js')
 
 const getAllNacionalidades = async function () {
 

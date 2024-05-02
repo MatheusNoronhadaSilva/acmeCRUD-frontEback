@@ -111,7 +111,77 @@ const deleteAtor = async function(id){
 
     }
 }
+
+const selectAtoresFilmeById = async function(id){
+
+    try {
+        
+        let sql = `SELECT tbl_ator.id, tbl_ator.nome
+        FROM tbl_ator
+        JOIN tbl_filme_ator ON tbl_ator.id = tbl_filme_ator.id_ator
+        WHERE tbl_filme_ator.id_filme = ${id};`
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        
+    }
+}
+
+const setinserirRelacaoAtorFilme = async function (idFilme, arrayIdAtor) {
+
+    try {
+
+        console.log('oioiiooioioiioioiioiiiio');
+        console.log(idFilme);
+        
+        for(let i = 0; i < arrayIdAtor.length; i++) {
+
+            console.log(arrayIdAtor);
+            let sql =`insert into tbl_filme_ator (id_filme, id_ator) values
+            (${idFilme},${arrayIdAtor[i]});`
+
+            console.log(sql);
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(result == false){
+                return false
+            }
+        }
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteRelacaoAtorFilmeByIdFilme = async function(idFilme) {
+
+    try {
+        
+        let sql = `DELETE FROM tbl_filme_ator WHERE id_filme = ${idFilme}; `
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
 module.exports = {
+    deleteRelacaoAtorFilmeByIdFilme,
+    setinserirRelacaoAtorFilme,
+    selectAtoresFilmeById,
     deleteAtor,
     selectAllAtores,
     selectUltimoEnvioAtor,

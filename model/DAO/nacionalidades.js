@@ -63,6 +63,7 @@ const deleteRelacaoNacionalidadeAtor = async function(id){
     try {
 
         let sql = `delete from tbl_ator_nacionalidade where tbl_ator_nacionalidade.id_ator = ${id};`
+        console.log(sql);
 
         let resultSql = await prisma.$executeRawUnsafe(sql)
 
@@ -77,7 +78,7 @@ const deleteRelacaoNacionalidadeAtor = async function(id){
     }
 }
 
-const selectNacionalidadeById = async function(id) {
+const selectNacionalidadeAtorById = async function(id) {
 
 
     let sql = `SELECT tbl_nacionalidade.id, tbl_nacionalidade.nacionalidade
@@ -93,9 +94,26 @@ const selectNacionalidadeById = async function(id) {
     }
 }
 
+const selectNacionalidadeDiretorById = async function(id){
+
+    let sql = `SELECT tbl_nacionalidade.*
+    FROM tbl_nacionalidade
+    JOIN tbl_diretor_nacionalidade ON tbl_nacionalidade.id = tbl_diretor_nacionalidade.id_nacionalidade
+    WHERE tbl_diretor_nacionalidade.id_diretor = ${id};`
+
+    let rssql = await prisma.$queryRawUnsafe(sql)
+
+    if(rssql) {
+        return rssql
+    } else {
+        return false
+    }
+}
+
 module.exports = {
+    selectNacionalidadeDiretorById,
     deleteRelacaoNacionalidadeAtor,
-    selectNacionalidadeById,
+    selectNacionalidadeAtorById,
     setInserirRelacaoNacionalidadeAtor,
     selectAllNacionalidades
 }

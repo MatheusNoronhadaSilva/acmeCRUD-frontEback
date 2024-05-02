@@ -8,7 +8,6 @@
 
 //Import da biblioteca do prisma client
 const { PrismaClient } = require('@prisma/client')
-const { selectAllDiretores } = require('./filme')
 
 //instancia da classe prisma client
 const prisma = new PrismaClient()
@@ -80,11 +79,11 @@ const selectUltimoEnvioDiretor = async function () {
 
 const selectAllDiretores = async function () {
 
-    let sql = `select * from tbl_ator;`
+    let sql = `select * from tbl_diretor;`
 
     let rssql = await prisma.$queryRawUnsafe(sql)
 
-    console.log('atores enviados');
+    console.log('diretores enviados');
     if(rssql) {
         return rssql
     } else {
@@ -92,7 +91,78 @@ const selectAllDiretores = async function () {
     }
 }
 
+const selectDiretorFilmeById = async function(id) {
+
+    try {
+
+        
+        let sql = `SELECT tbl_diretor.id, tbl_diretor.nome
+    FROM tbl_diretor
+    JOIN tbl_filme_diretor ON tbl_diretor.id = tbl_filme_diretor.id_diretor
+    WHERE tbl_filme_diretor.id_filme = ${id};`
+
+    let result = await prisma.$queryRawUnsafe(sql)
+
+    if(result){
+        return result
+    } else {
+        return false
+    }
+    } catch (error) {
+        return false
+    }
+}
+
+const setInserirRelacaoDiretorFilme = async function (idFilme, arrayIdDiretor) {
+
+    try {
+
+        console.log('oioiiooioioiioioiioiiiio');
+        console.log(idFilme);
+        
+        for(let i = 0; i < arrayIdDiretor.length; i++) {
+
+            console.log(arrayIdDiretor);
+            let sql =`insert into tbl_filme_diretor (id_filme, id_diretor) values
+            (${idFilme},${arrayIdDiretor[i]});`
+
+            console.log(sql);
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(result == false){
+                return false
+            }
+        }
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteRelacaoDiretorFilmeByIdFilme = async function(idFilme) {
+
+    try {
+        
+        let sql = `DELETE FROM tbl_filme_diretor WHERE id_filme = ${idFilme};`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result) {
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
+    deleteRelacaoDiretorFilmeByIdFilme,
+    setInserirRelacaoDiretorFilme,
+    selectDiretorFilmeById,
     selectAllDiretores,
     selectUltimoEnvioDiretor,
     setInserirNovoDiretor
