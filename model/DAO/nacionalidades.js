@@ -110,6 +110,16 @@ const selectNacionalidadeDiretorById = async function(id){
     }
 }
 
+const setInserirNovaNacionalidade = async function(){
+
+    try {
+        
+        let sql = ``
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
     selectNacionalidadeDiretorById,
     deleteRelacaoNacionalidadeAtor,

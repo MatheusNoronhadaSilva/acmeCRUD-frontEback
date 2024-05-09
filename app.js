@@ -371,6 +371,24 @@ app.post('/v2/acmeFilmes/ator', cors(), bodyParserJSON, async function(request, 
     }
 })
 
+//NACIONALIDADE - POST
+app.post('/v2/acmeFilmes/nacionalidade', cors(), bodyParserJSON, async function(request, response){
+
+    let contentType = request.header('content-type')
+
+    let dadosBody = request.body
+
+    let resultDadosNovaNacionalidade = await controllerNacionalidades.setInserirNovaNacionalidade(dadosBody, contentType)
+
+    if(resultDadosNovaNacionalidade) {
+        response.status(200)
+        response.json({message: 'postado com sucesso'})
+    } else {
+        response.status(404)
+        response.json({message: 'error'})
+    }
+})
+
 app.post('/v2/acmeFilmes/diretor', cors(), bodyParserJSON, async function(request, response){
 
     let contentType = request.header('content-type')

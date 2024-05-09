@@ -63,7 +63,7 @@ const setInserirNovogenero = async function (dadosGeneros, contentType) {
             }
         }
     } catch (error) {
-        
+        return message.ERROR_INTERVAL_SERVER_DB //500
     }
 }
 
