@@ -8,6 +8,7 @@
 
 //Import da biblioteca do prisma client
 const { PrismaClient } = require('@prisma/client')
+const { Router } = require('express')
 
 //instancia da classe prisma client
 const prisma = new PrismaClient()
@@ -121,6 +122,7 @@ const selectAtoresFilmeById = async function(id){
         JOIN tbl_filme_ator ON tbl_ator.id = tbl_filme_ator.id_ator
         WHERE tbl_filme_ator.id_filme = ${id};`
 
+
         let result = await prisma.$queryRawUnsafe(sql)
 
         if(result){
@@ -129,7 +131,7 @@ const selectAtoresFilmeById = async function(id){
             return false
         }
     } catch (error) {
-        
+       return false 
     }
 }
 
@@ -161,6 +163,39 @@ const setinserirRelacaoAtorFilme = async function (idFilme, arrayIdAtor) {
     }
 }
 
+const setAlterarRelacaoAtorFilme = async function (idFilme, arrayIdAtor, arrayIdAtorAtual) {
+
+    try {
+
+        console.log('trocando ator');
+
+        console.log(arrayIdAtor);
+        console.log(arrayIdAtorAtual);
+        
+        for (let i = 0; i < arrayIdAtor.length; i++) {
+
+            let sql = `UPDATE tbl_filme_ator
+            SET id_ator = ${arrayIdAtor[i]}
+            WHERE id_filme = ${idFilme} AND id_ator = ${arrayIdAtorAtual[i]};`
+
+            console.log(sql);
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(!result){
+                return false
+            }
+            
+        }
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+
+
 const deleteRelacaoAtorFilmeByIdFilme = async function(idFilme) {
 
     try {
@@ -178,7 +213,49 @@ const deleteRelacaoAtorFilmeByIdFilme = async function(idFilme) {
         return false
     }
 }
+
+const updateAtor = async function (id, dadosAtor){
+
+    try {
+
+        let sql
+
+        if(infoAtor.biografia == null || infoAtor.biografia == undefined || infoAtor.biografia == '') {
+
+            sql = `UPDATE tbl_ator
+            SET nome = '${dadosAtor.nome}',
+                email = '${dadosAtor.email}',
+                biografia = null,
+                nascimento = '${dadosAtor.nascimento}',
+                id_sexo = ${dadosAtor.sexo}
+            WHERE id = ${id};
+            `
+        } else {
+            sql = `UPDATE tbl_ator
+            SET nome = '${dadosAtor.nome}',
+                email = '${dadosAtor.email}',
+                biografia = '${dadosAtor.biografia}',
+                nascimento = '${dadosAtor.nascimento}',
+                id_sexo = ${dadosAtor.sexo}
+            WHERE id = ${id};
+            `
+        }
+
+        let result = await prisma.$executeRawUnsafe(sql)
+        
+        if( result) {
+            return result
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
 module.exports = {
+    updateAtor,
+    setAlterarRelacaoAtorFilme,
     deleteRelacaoAtorFilmeByIdFilme,
     setinserirRelacaoAtorFilme,
     selectAtoresFilmeById,

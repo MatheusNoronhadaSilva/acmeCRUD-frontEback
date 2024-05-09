@@ -126,8 +126,6 @@ const setInserirRelacaoDiretorFilme = async function (idFilme, arrayIdDiretor) {
             let sql =`insert into tbl_filme_diretor (id_filme, id_diretor) values
             (${idFilme},${arrayIdDiretor[i]});`
 
-            console.log(sql);
-
             let result = await prisma.$executeRawUnsafe(sql)
 
             if(result == false){
@@ -159,7 +157,34 @@ const deleteRelacaoDiretorFilmeByIdFilme = async function(idFilme) {
     }
 }
 
+const setAlterarRelacaoDiretorFilme = async function(idFilme, arrayIdDiretor, arrayIdDiretorAtual){
+
+    try {
+        
+        for (let i = 0; i < arrayIdDiretor.length; i++) {
+
+            let sql = `UPDATE tbl_filme_diretor
+            SET id_diretor = ${arrayIdDiretor[i]}
+            WHERE id_filme = ${idFilme} AND id_diretor = ${arrayIdDiretorAtual[i]};`
+
+            console.log(sql);
+
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            if(!result){
+                return false
+            }
+            
+        }
+
+        return true 
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
+    setAlterarRelacaoDiretorFilme,
     deleteRelacaoDiretorFilmeByIdFilme,
     setInserirRelacaoDiretorFilme,
     selectDiretorFilmeById,

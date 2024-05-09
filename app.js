@@ -69,43 +69,43 @@ app.get('/v1/acmeFilmes/filmes', cors(), (request, response) => {
     }
 })
 
-app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
+// app.get('/v1/acmeFilmes/:id', cors(), (req, res) => {
 
-    let idFilme = req.params.id
-    let controleFilmesId = require('./controller/funcoes')
-    const listaFilmesId = controleFilmesId.getListaFilmeId(idFilme)
-    console.log(listaFilmesId)
-    if (listaFilmesId) {
-        res.json(listaFilmesId)
-    } else {
-        res.status(404).json({ erro: 'nenhum filme com esse id foi encontrado' })
-    }
-})
+//     let idFilme = req.params.id
+//     let controleFilmesId = require('./controller/funcoes')
+//     const listaFilmesId = controleFilmesId.getListaFilmeId(idFilme)
+//     console.log(listaFilmesId)
+//     if (listaFilmesId) {
+//         res.json(listaFilmesId)
+//     } else {
+//         res.status(404).json({ erro: 'nenhum filme com esse id foi encontrado' })
+//     }
+// })
 
-app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
+// app.get('/v1/acmeFilmes/filmes/nomes', cors(), (req, res) => {
 
-    let controleNomes = require('./controller/funcoes')
-    const listaNomes = controleNomes.getListaFilmesNomes()
-    if (listaNomes) {
-        res.json(listaNomes)
-    } else {
-        res.status(404).json({ erro: 'nenhum nome de filme foi encontrado' })
-    }
-})
+//     let controleNomes = require('./controller/funcoes')
+//     const listaNomes = controleNomes.getListaFilmesNomes()
+//     if (listaNomes) {
+//         res.json(listaNomes)
+//     } else {
+//         res.status(404).json({ erro: 'nenhum nome de filme foi encontrado' })
+//     }
+// })
 
 
-app.get('/v2/acmeFilmes/filmes/comprados', cors(), async function (request, response) {
+// app.get('/v2/acmeFilmes/filmes/comprados', cors(), async function (request, response) {
 
-    let idsFilmes = await controllerFilmes.getListarComprados()
+//     let idsFilmes = await controllerFilmes.getListarComprados()
 
-    if(idsFilmes) {
-        response.json(idsFilmes)
-        response.status(200)
-    } else {
-        response.json({message: 'nenhum registro de comprados encontrado'})
-        response.status(404)
-    }
-})
+//     if(idsFilmes) {
+//         response.json(idsFilmes)
+//         response.status(200)
+//     } else {
+//         response.json({message: 'nenhum registro de comprados encontrado'})
+//         response.status(404)
+//     }
+// })
 
 app.get('/v2/acmeFilmes/filmes/ultimos', cors(), async function(request, response){
 
@@ -119,21 +119,21 @@ app.get('/v2/acmeFilmes/filmes/ultimos', cors(), async function(request, respons
     }
 })
 
-app.post('/v2/acmeFilmes/filme/comprar', cors(), bodyParserJSON, async function (request, response) {
+// app.post('/v2/acmeFilmes/filme/comprar', cors(), bodyParserJSON, async function (request, response) {
 
-    let contentType = request.header('content-type')
+//     let contentType = request.header('content-type')
 
-    let dadosBody = request.body
+//     let dadosBody = request.body
 
-    let resultComprarFilme = await controllerFilmes.setInserirCompra(dadosBody, contentType)
+//     let resultComprarFilme = await controllerFilmes.setInserirCompra(dadosBody, contentType)
 
-    if(resultComprarFilme) {
-        response.json({message: 'filme comprado: ' + resultComprarFilme})
-        response.status(200)
-    } else {
-        response.json({message: 'erro na hora da compra'})
-    }
-})
+//     if(resultComprarFilme) {
+//         response.json({message: 'filme comprado: ' + resultComprarFilme})
+//         response.status(200)
+//     } else {
+//         response.json({message: 'erro na hora da compra'})
+//     }
+// })
 
 //GET - LISTAR TODOS OS FILMES
 app.get('/v2/acmeFilmes/filmes', cors(), async function (request, response) {
@@ -167,7 +167,7 @@ app.get('/v2/acmeFilmes/filmes/filtro', cors(), async function (req, response) {
 })
 
 
-//GET - PEGAR PELO ID
+//GET FILME - PEGAR PELO ID
 app.get('/v2/acmeFilmes/filme/:id', cors(), async function(request, response){
 
     let idFilme = request.params.id
@@ -178,7 +178,7 @@ app.get('/v2/acmeFilmes/filme/:id', cors(), async function(request, response){
     response.json(dadosFilme)
 })
 
-//DELETE
+//DELETE - FILME
 app.delete('/v2/acmeFilmes/filme/deletar/:id', cors(), async function(request, response){
 
     let idFilme = request.params.id
@@ -191,7 +191,7 @@ app.delete('/v2/acmeFilmes/filme/deletar/:id', cors(), async function(request, r
     response.status(dadosFilme.status_code)
 })
 
-//POST
+//POST - FILME
 app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request, response){
 
     let contentType = request.header('content-type')
@@ -204,16 +204,17 @@ app.post('/v2/acmeFilmes/filme', cors(), bodyParserJSON, async function(request,
     //encaminhandoos dados para o controler para enviar para o DAO
     let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody, contentType)
 
+    console.log('result ' + resultDadosNovoFilme[0]);
     if(resultDadosNovoFilme){
         response.status(resultDadosNovoFilme.status_code)
         response.json(resultDadosNovoFilme)
     } else {
-        response.status(200)
-        response.json(resultDadosNovoFilme)
+        response.status(404)
+        response.json({message: 'não foi possivel postar'})
     }
 })
 
-//PUT
+//FILME - PUT
 app.put('/v2/acmeFilmes/filme/atualizar/:id', cors(), bodyParserJSON, async function(request, response){
 
     let idFilme = request.params.id
@@ -226,11 +227,41 @@ app.put('/v2/acmeFilmes/filme/atualizar/:id', cors(), bodyParserJSON, async func
 
     console.log(dadosFilme);
 
+    if(dadosFilme){
+     
     response.json(dadosFilme)
     response.status(dadosFilme.status_code)
+    } else {
+        response.status(404)
+        response.json({message: 'erro ao editar o item'})
+    }
 })
 
-// GENERO - GET
+//ATOR - PUT
+app.put('/v2/acmeFilmes/ator/atualizar/:id', cors()), bodyParserJSON, async function(request, response){
+
+    let idAtor = request.params.id
+
+    let contentType = request.header('content-type')
+
+    let dadosBody = request.body
+
+    let dadosAtor = await controllerAtores.setAtualizarAtor(idAtor, dadosBody, contentType)
+
+    console.log(dadosAtor);
+    if(dadosAtor){
+        response.status(200)
+        response.json({message: 'editado com sucesso'})
+    } else {
+        response.status(404)
+        response.json({message: 'falha ao editar o item'})
+    }
+
+
+
+}
+
+// FILME - GET
 app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
 
     let dadosGeneros = await controllerGeneros.getAllgeneros()
@@ -241,6 +272,22 @@ app.get('/v2/acmeFilmes/generos', cors(), async function(request, response){
     } else {
         response.json({ message: 'nenhum registro encontrado'})
         response.status(404)
+    }
+})
+
+//GENERO - GET PELO ID DO FILME
+app.get('/v2/acmeFilmes/generos/filtro/:id', cors(), async function(request, response){
+
+    let id = request.params.id
+
+    let dadosGeneros = await controllerGeneros.getGenerosByIdFilme(id)
+
+    if(dadosGeneros){
+        response.status(200)
+        response.json(dadosGeneros)
+    } else {
+        response.status(200)
+        response.json({message: 'nada foi encontrado'})
     }
 })
 
@@ -300,6 +347,22 @@ app.get('/v2/acmeFilmes/atores', cors(), async function(request, response){
     }
 })
 
+//ATOR - GET PELO ID DO FILME
+app.get('/v2/acmeFilmes/atores/filtro/:id', cors(), async function(request, response){
+
+    let id = request.params.id
+
+    let dadosAtores = await controllerAtores.getAtorByIdFilme(id)
+
+    if(dadosAtores){
+        response.status(200)
+        response.json({dadosAtores})
+    } else {
+        response.status(404)
+        response.json({message: 'nada foi encontrado'})
+    }
+})
+
 //DIRETORES - GET
 app.get('/v2/acmeFilmes/diretores', cors(), async function(request, response){
 
@@ -311,6 +374,22 @@ app.get('/v2/acmeFilmes/diretores', cors(), async function(request, response){
     } else {
         response.status
         response.json({message: 'nenhum registro encontrado'})
+    }
+})
+
+//DIRETOR - GET PELO ID DO FILME
+app.get('/v2/acmeFilme/diretores/filtro/:id', cors(), async function(request, response){
+
+    let id = request.params.id
+
+    let dadosDiretores = await controllerDiretores.getDiretoresByIdFilme(id)
+
+    if(dadosDiretores){
+        response.status(200)
+        response.json(dadosDiretores)
+    } else {
+        response.status(404)
+        response.json({message: 'nada foi encontrado'})
     }
 })
 
@@ -389,13 +468,22 @@ app.post('/v2/acmeFilmes/nacionalidade', cors(), bodyParserJSON, async function(
     }
 })
 
+//DIRETOR - POST
 app.post('/v2/acmeFilmes/diretor', cors(), bodyParserJSON, async function(request, response){
 
     let contentType = request.header('content-type')
 
     let dadosBody = request.body
 
-    let resultDadosNovoDiretor = await controllerDiretores.setInserirNovoDiretor(dados)
+    let resultDadosNovoDiretor = await controllerDiretores.setInserirNovoDiretor(dadosBody, contentType)
+
+    if(resultDadosNovoDiretor){
+        response.status(200)
+        response.json(resultDadosNovoDiretor)
+    } else {
+        response.status(404)
+        response.json({message: 'não foi possivel postar'})
+    }
 })
 
 //GENERO - DELETE

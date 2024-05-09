@@ -44,33 +44,47 @@
             <div class="flex flex-row flex-grow">
                 <div class="flex flex-col w-1/2 h-full space-y-6">
                     <div class="flex flex-col w-full items-center justify-center">
-                        <span class="text-2xl font-bold">lançamento</span>
+                        <span class="text-xl font-bold">lançamento</span>
                         <input id="lancamento" class="h-16 w-2/3 text-2xl" type="date">
                     </div>
                     <div class="flex flex-col w-full items-center justify-center">
-                        <span class="text-2xl font-bold">Duração</span>
+                        <span class="text-xl font-bold">Duração</span>
                         <input id="duracao" class="text-2xl h-16 text-center w-2/3" maxlength="8" type="text">
                     </div>
                     <div class="flex flex-col w-full items-center justify-center">
-                        <span class="text-2xl font-bold">Generos max.3</span>
+                        <span class="text-xl font-bold">Generos max.3</span>
                         <div class="h-16 w-2/3 text-sm">
                             <select class="select2 form-control" id="selectGeneros" multiple="" tabindex="-1" style="height: 100%; width: 100%;"
                                 style="display: none;">
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="flex flex-col w-1/2 h-full space-y-0">
                     <div class="flex flex-col w-full items-center justify-center">
-                        <span class="text-2xl font-bold">Valor para alugar</span>
+                        <span class="text-xl font-bold">Classificação</span>
+                        <div class="h-16 w-2/3 text-sm">
+                            <select class="select2 form-control" id="selectClassificacao" tabindex="-1" style="height: 100%; width: 100%;"
+                                style="display: none;">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-full items-center justify-center">
+                        <span class="text-xl font-bold">original sitePirata</span>
+                        <div class="h-16 w-2/3 text-sm">
+                            <input type="checkbox" id="checkbox">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col w-1/2 h-full space-y-6">
+                    <div class="flex flex-col w-full items-center justify-center">
+                        <span class="text-xl font-bold">Valor para alugar</span>
                         <input id="valorAlugar" class="h-16 w-2/3 text-2xl text-center" min="0" max="99" type="number">
                     </div>
                     <div class="flex flex-col w-full items-center justify-center">
-                        <span class="text-2xl font-bold">Valor para comprar</span>
+                        <span class="text-xl font-bold">Valor para comprar</span>
                         <input id="valorComprar" class="h-16 w-2/3 text-2xl text-center" max="99" min="0" type="number">
                     </div>
                         <div class="flex flex-col w-full items-center justify-center">
-                            <span class="text-2xl font-bold">Atores</span>
+                            <span class="text-xl font-bold">Atores</span>
                             <div class="h-16 w-2/3 text-sm overflow-hidden">
                                 <select class="select2 form-control overflow-y-auto overflow-x-hidden" id="selectAtores" multiple="" tabindex="-1" style="max-height: 100%; width: 100%;"
                                     style="display: none;">
@@ -78,7 +92,7 @@
                             </div>
                         </div>
                         <div class="flex flex-col w-full items-center justify-center">
-                            <span class="text-2xl font-bold">Diretores</span>
+                            <span class="text-xl font-bold">Diretores</span>
                             <div class="h-16 w-2/3 text-sm">
                                 <select class="select2 form-control" id="selectDiretores" multiple="" tabindex="-1" style="height: 100%; width: 100%;"
                                     style="display: none;">

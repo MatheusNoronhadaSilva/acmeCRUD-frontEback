@@ -24,6 +24,35 @@ const selectAllClassificacoes = async function () {
 
 }
 
+// const InsertClassificacao = async function(dadosClassificacao) {
+
+//     let sql
+
+//     try {
+//         sql = `insert into tbl_classificacao (
+//             classificacao, 
+//             caracteristicas, 
+//             img_classificacao
+//             ) values
+//             ('${dadosClassificacao.classificacao}', '${dadosClassificacao.caracteristicas}', '${dadosClassificacao.img_classificacao}');
+//             `
+
+//             console.log(sql);
+
+//             console.log('inserindo');
+
+//             let result = await prisma.$executeRawUnsafe(sql)
+
+//             if(result) {
+//                 return result
+//             } else {
+//                 return false
+//             }
+//     } catch (error) {
+//         return false
+//     }
+// }
+
 module.exports = {
     selectAllClassificacoes
 }

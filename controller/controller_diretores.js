@@ -48,6 +48,48 @@ const getAllDiretores  = async function() {
     }
 }
 
+const getDiretoresByIdFilme = async function(id){
+
+    let idFilme = id
+
+    let diretoresJSON = {}
+
+    //validação para ver se o id é valido
+    if (idFilme == '' || idFilme == undefined || isNaN(idFilme)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+
+        let dadosDiretores = await diretoresDAO.selectDiretorFilmeById(idFilme)
+
+        //validação 
+        if (dadosDiretores) {
+
+            if (dadosDiretores.length > 0) {
+
+
+                diretoresJSON = dadosDiretores;
+                diretoresJSON.status_code = 200
+
+                return diretoresJSON
+
+            } else {
+
+                return message.ERROR_NOT_FOUND
+            }
+        } else {
+
+            return message.ERROR_INTERVAL_SERVER_DB //500
+        }
+
+
+    }
+}
+
+const setInserirNovoDiretor = async function (dadosDiretor, contentType) {
+
+}
+
 module.exports = {
+    getDiretoresByIdFilme,
     getAllDiretores
 }

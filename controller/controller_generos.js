@@ -84,7 +84,80 @@ const getAllgeneros = async function () {
     }
 }
 
+const getGenerosByIdFilme = async function(id){
+
+    let idFilme = id
+
+    let generosJSON = {}
+
+    //validação para ver se o id é valido
+    if (idFilme == '' || idFilme == undefined || isNaN(idFilme)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+
+        let dadosGeneros = await generosDAO.selectGenerosFilmeById(idFilme)
+
+        //validação 
+        if (dadosGeneros) {
+
+            if (dadosGeneros.length > 0) {
+
+
+                generosJSON = dadosGeneros;
+                generosJSON.status_code = 200
+
+                return generosJSON
+
+            } else {
+
+                return message.ERROR_NOT_FOUND
+            }
+        } else {
+
+            return message.ERROR_INTERVAL_SERVER_DB //500
+        }
+
+
+    }
+}
+
+const setAtualizargeneros = async function (idGenero, dadosgenero, contentType) {
+
+    try {
+        
+        if (String(contentType).toLowerCase() == 'application/json') {
+
+            let generoAlteradoJSON = {}
+            let id = idGenero
+
+            if(dadosgenero.nome == '' || dadosgenero.nome == null || dadosgenero.nome == undefined){
+                return message.ERROR_REQUIRED_FIELDS //400
+            } else {
+
+                let atualizarGenero = await generosDAO.updateGenero(id)
+
+                if(atualizarGenero){
+                    
+                    generoAlteradoJSON.genero = atualizarGenero
+                    generoAlteradoJSON.id = `id do genero alterado: ${id}`
+                    generoAlteradoJSON.status = message.SUCESS_UPDATED_ITEM.status
+                    generoAlteradoJSON.status_code = message.SUCESS_UPDATED_ITEM.status_code
+                    generoAlteradoJSON.message = message.SUCESS_UPDATED_ITEM.message
+                } else {
+                    return message.ERROR_INTERVAL_SERVER_DB //500
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
+    setAtualizargeneros,
+    getGenerosByIdFilme,
     setInserirNovogenero,
     getAllgeneros,
     setExcluirGenero

@@ -149,7 +149,96 @@ const setExcluirAtor = async function(id) {
 
 }
 
+const getAtorByIdFilme = async function(id){
+
+    let idFilme = id
+
+    let atoresJSON = {}
+
+    //validação para ver se o id é valido
+    if (idFilme == '' || idFilme == undefined || isNaN(idFilme)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+
+        let dadosAtores = await atoresDAO.selectAtoresFilmeById(idFilme)
+
+        //validação 
+        if (dadosAtores) {
+
+            if (dadosAtores.length > 0) {
+
+
+                atoresJSON = dadosAtores;
+                atoresJSON.status_code = 200
+
+                return atoresJSON
+
+            } else {
+
+                return message.ERROR_NOT_FOUND
+            }
+        } else {
+
+            return message.ERROR_INTERVAL_SERVER_DB //500
+        }
+
+
+    }
+}
+
+const setAtualizarAtor = async function(id, dadosAtor, contentType){
+
+    const idAtor = id
+
+    try {
+        
+        // String(contentType).toLowerCase() == 'application/json' validação de content-type (apenas application/json)
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        let atorAlteradoJSON = {}
+
+        if (dadosAtor.nome == '' || dadosAtor.nome == undefined || dadosAtor.nome == null || dadosAtor.nome.length > 60 ||
+        dadosAtor.email == '' || dadosAtor.email == undefined || dadosAtor.email == null || dadosAtor.email.length > 80 ||
+        dadosAtor.biografia > 65000 ||
+        dadosAtor.nascimento == '' || dadosAtor.nascimento == undefined || dadosAtor.nascimento == null || dadosAtor.nascimento.length > 10 ||
+        dadosAtor.sexo == '' || dadosAtor.sexo == undefined || dadosAtor.sexo == null || dadosAtor.sexo.length > 1 || dadosAtor.sexo != 1 && dadosAtor.sexo != 2 ||
+        dadosAtor.nacionalidade[0] == '' || dadosAtor.nacionalidade[0] == undefined || dadosAtor.nacionalidade[0] == null || dadosAtor.nacionalidade[0].length > 3
+        ) {
+            return message.ERROR_REQUIRED_FIELDS //400
+        } else {
+
+                // encamiha para o DAO para inserir no banco
+                let atualizarAtor = await atoresDAO.updateAtor(idAtor, dadosAtor)
+
+                console.log('atualizar ator ' + atualizarAtor);
+                
+                if (atualizarAtor) {
+                    //retorno dos dados
+                    console.log('certooo');
+                    atorAlteradoJSON.ator = dadosAtor
+                    atorAlteradoJSON.id = `id do ator alterado: ${id}`
+                    atorAlteradoJSON.status = message.SUCESS_UPDATED_ITEM.status
+                    atorAlteradoJSON.status_code = message.SUCESS_UPDATED_ITEM.status_code
+                    atorAlteradoJSON.message = message.SUCESS_UPDATED_ITEM.message
+
+                    return FilmeAlteradoJSON //201
+                } else {
+                    return message.ERROR_INTERVAL_SERVER_DB //500
+                }
+        }
+    } else {
+        return message.ERROR_CONTENT_TYPE //415
+    }
+
+} catch (error) {
+    return message.ERROR_INTERVAL_SERVER //500 erro na controller, e não no banco
+}
+
+}
+
 module.exports = {
+    setAtualizarAtor,
+    getAtorByIdFilme,
     setExcluirAtor,
     getAllAtores,
     setInserirNovoAtor

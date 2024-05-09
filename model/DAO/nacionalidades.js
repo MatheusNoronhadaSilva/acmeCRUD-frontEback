@@ -110,17 +110,28 @@ const selectNacionalidadeDiretorById = async function(id){
     }
 }
 
-const setInserirNovaNacionalidade = async function(){
+const insertNacionalidade = async function(dadosNacionalidade){
 
     try {
         
-        let sql = ``
+        let sql = `INSERT INTO tbl_nacionalidade (nome)
+        VALUES ('${dadosNacionalidade.nacionalidade}');
+        `
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
     } catch (error) {
-        
+        return false   
     }
 }
 
 module.exports = {
+    insertNacionalidade,
     selectNacionalidadeDiretorById,
     deleteRelacaoNacionalidadeAtor,
     selectNacionalidadeAtorById,

@@ -85,7 +85,7 @@ const selectGenerosFilmeById = async function (idFilme) {
             return false
         }
     } catch (error) {
-        
+        return false
     }
 }
 
@@ -113,6 +113,7 @@ const setInserirRelacaoGeneroFilme = async function (idFilme, arrayIdGenero) {
 
         return true
     } catch (error) {
+        console.log('erroorororor');
         return false
     }
 }
@@ -153,14 +154,66 @@ const deleteRelacaoGeneroFilmeByIdGenero = async function (idgenero) {
     }
 }
 
+const setAlterarRelacaoGeneroFilme = async function (idFilme, arrayIdGenero, arrayIdGeneroAtual){
+
+    try {
+        
+        for (let i = 0; i < arrayIdGenero.length; i++) {
+
+            let sql = `UPDATE tbl_filme_genero
+            SET id_genero = ${arrayIdGenero[i]}
+            WHERE id_filme = ${idFilme} AND id_genero = ${arrayIdGeneroAtual[i]};`
+
+            console.log(sql);
+            let result = await prisma.$executeRawUnsafe(sql)
+
+            console.log(result);
+
+            if(!result){
+                return false
+            }
+            
+        }
+
+        return true
+
+    } catch (error) {
+        return false
+    }
+}
+
+const updateGenero = async function (idGenero, dadosGenero) {
+
+    try {
+        
+        let sql = `UPDATE tbl_genero
+        SET nome_genero = '${dadosGenero.nome}'
+        WHERE id_genero = ${idGenero};
+        `
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 
 
 module.exports = {
+    setAlterarRelacaoGeneroFilme,
+    selectGenerosFilmeById,
     deleteRelacaoGeneroFilmeByIdGenero,
     deleteRelacaoGeneroFilmeByIdFilme,
     setInserirRelacaoGeneroFilme,
     selectGenerosFilmeById,
     selectAllGeneros,
     insertGenero,
-    deleteGenero
+    deleteGenero,
+    updateGenero
 }

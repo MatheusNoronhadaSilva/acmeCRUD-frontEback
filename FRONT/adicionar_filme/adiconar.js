@@ -43,6 +43,23 @@ async function adicionarOpcaoGeneros () {
     });
 }
 
+async function adicionarOpcaoClassificacao () {
+
+    const selectClassificacao = document.getElementById('selectClassificacao')
+
+    const classifcacoes = await pegarTodosAsClassificaoes()
+
+    classifcacoes.forEach(classifcacao => {
+        
+        console.log(classifcacao);
+        const novaOpcaoClassificacao = document.createElement('option')
+        novaOpcaoClassificacao.text = classifcacao.classificacao
+        novaOpcaoClassificacao.value = classifcacao.id
+
+        selectClassificacao.add(novaOpcaoClassificacao)
+    });
+}
+
 async function adicionarOpcaoAtores() {
 
     const selectAtores = document.getElementById('selectAtores')
@@ -157,6 +174,25 @@ function pegarOpcoesSelecionadasGeneros() {
     return opcoesSelecionadas
   }
 
+  function pegarOpcoesSelecionadasClassificacao() {
+
+    const selectClassificacao = document.getElementById('selectClassificacao');
+    
+    let opcoesSelecionadas = [];
+    
+    for (let i = 0; i < selectClassificacao.options.length; i++) {
+      const option = selectClassificacao.options[i];
+      if (option.selected) {
+        opcoesSelecionadas.push(option.value);
+      }
+    }
+    
+    // Exibindo os valores das opções selecionadas
+    console.log("Opções classificacao:", opcoesSelecionadas);
+
+    return opcoesSelecionadas
+  }
+
 botao.addEventListener('click', async function(){
 
     const link = trocarimagem()
@@ -166,15 +202,15 @@ botao.addEventListener('click', async function(){
     const nome = document.getElementById('nome').value
     const duracao = document.getElementById('duracao').value
     const lancamento = document.getElementById('lancamento').value
-    const originalidadeCheckbox = document.getElementById('originalidade')
-    const originalidade = false
+    const originalidadeCheckbox = document.getElementById('checkbox')
+    let originalidade = false
     const generos = pegarOpcoesSelecionadasGeneros()
     const atores = pegarOpcoesSelecionadasAtores()
     const diretores = pegarOpcoesSelecionadasDiretores()
-    idClassficacao
+    const idClassificacao = pegarOpcoesSelecionadasClassificacao()
     
 
-    if(link == '' || sinopse == '' || valor_alugar == '' || valor_comprar == '' || nome == '' || duracao == '' || lancamento == '' || generos == '' || generos == null || atores == '' || atores == null || diretores == '' || diretores == null){
+    if(link == '' || sinopse == '' || valor_alugar == '' || valor_comprar == '' || nome == '' || duracao == '' || lancamento == '' || generos == '' || generos == null || atores == '' || atores == null || diretores == '' || diretores == null || idClassificacao == '' || idClassificacao == null){
         alert('todos os campos devem ser preenchidos')
     } else {
 
@@ -183,6 +219,9 @@ botao.addEventListener('click', async function(){
         } else {
             originalidade = false
         }
+
+        let idClassificacaoString = idClassificacao[0]
+        let idClassificacaoNumero = parseInt(idClassificacaoString, 10)
 
 
         const novoFilmeJSON = {}
@@ -195,7 +234,7 @@ botao.addEventListener('click', async function(){
         novoFilmeJSON.foto_capa = link,
         novoFilmeJSON.valor_alugar = valor_alugar,
         novoFilmeJSON.valor_comprar = valor_comprar,
-        novoFilmeJSON.id_classificacao = idClassficacao
+        novoFilmeJSON.id_classificacao = idClassificacaoNumero
         novoFilmeJSON.original_SitePirata = originalidade
         novoFilmeJSON.diretores = diretores,
         novoFilmeJSON.atores = atores,
@@ -203,7 +242,7 @@ botao.addEventListener('click', async function(){
 
         console.log(novoFilmeJSON);
 
-        // postarNovoFilme(novoFilmeJSON)
+        postarNovoFilme(novoFilmeJSON)
 
         // window.location.href = '../admin/admin2.html'
     }
@@ -258,8 +297,17 @@ async function pegarTodosOsDiretores () {
 
 }
 
+async function pegarTodosAsClassificaoes () {
+
+    const endpoint = `http://localhost:8080/v2/acmeFilmes/classificacoes`
+    const classifcacoes = await fetch(endpoint);
+    const classifcacoesDados = await classifcacoes.json();
+    return classifcacoesDados.classificacao;
+}
+
 adicionarOpcaoGeneros()
 adicionarOpcaoAtores()
 adicionarOpcaoDiretores()
+adicionarOpcaoClassificacao()
 
 $(".select2").select2();

@@ -76,10 +76,9 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
                     console.log(novaRelacaoAtorFilme);
                     console.log(novaRelacaoDiretorFilme);
                     console.log(novaRelacaogeneroFilme);
-    
+
                     if (novoFilme && idPego && novaRelacaoAtorFilme && novaRelacaoDiretorFilme && novaRelacaogeneroFilme) {
                         const id = idPego[0].id
-                        console.log(id);
                         //retorno dos dados
                         novoFilmeJSON.filme = dadosFilme
                         novoFilmeJSON.id_adicionado = `O novo filme possui o id ${id}`
@@ -99,6 +98,7 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
         }
 
     } catch (error) {
+        console.log('erro');
         return message.ERROR_INTERVAL_SERVER //500 erro na controller, e não no banco
     }
 }
@@ -116,11 +116,17 @@ const setAtualizarFilme = async function (id, dadosFilme, contentType) {
         let FilmeAlteradoJSON = {}
 
         if (dadosFilme.nome == '' || dadosFilme.nome == undefined || dadosFilme.nome == null || dadosFilme.nome.length > 80 ||
-            dadosFilme.sinopse == '' || dadosFilme.sinopse == undefined || dadosFilme.sinopse == null || dadosFilme.sinopse.length > 65000 ||
-            dadosFilme.duracao == '' || dadosFilme.duracao == undefined || dadosFilme.duracao == null || dadosFilme.duracao.length > 8 ||
-            dadosFilme.data_lancamento == '' || dadosFilme.data_lancamento == undefined || dadosFilme.data_lancamento == null || dadosFilme.data_lancamento.length != 10 ||
-            dadosFilme.foto_capa == '' || dadosFilme.foto_capa == undefined || dadosFilme.foto_capa == null || dadosFilme.foto_capa > 200 ||
-            dadosFilme.valor_alugar.length > 6 || dadosFilme.valor_comprar.length > 6
+        dadosFilme.sinopse == '' || dadosFilme.sinopse == undefined || dadosFilme.sinopse == null || dadosFilme.sinopse.length > 65000 ||
+        dadosFilme.duracao == '' || dadosFilme.duracao == undefined || dadosFilme.duracao == null || dadosFilme.duracao.length > 8 ||
+        dadosFilme.data_lancamento == '' || dadosFilme.data_lancamento == undefined || dadosFilme.data_lancamento == null || dadosFilme.data_lancamento.length != 10 ||
+        dadosFilme.foto_capa == '' || dadosFilme.foto_capa == undefined || dadosFilme.foto_capa == null || dadosFilme.foto_capa > 300 ||
+        dadosFilme.valor_alugar =='' || dadosFilme.valor_alugar == undefined || dadosFilme.valor_alugar == null || dadosFilme.valor_alugar.length > 6 || 
+        dadosFilme.valor_comprar == '' || dadosFilme.valor_comprar == undefined || dadosFilme.valor_comprar == null || dadosFilme.valor_comprar.length > 6 ||
+        dadosFilme.id_classificacao == '' || dadosFilme.id_classificacao == undefined || dadosFilme.id_classificacao == null || ![1,2,3,4,5,6].includes(dadosFilme.id_classificacao) ||
+        dadosFilme.original_SitePirata != 1 && dadosFilme.original_SitePirata != 0 ||
+        dadosFilme.diretores[0] == '' || dadosFilme.diretores[0] == undefined || dadosFilme.diretores[0] == null || dadosFilme.diretores[0] == 0 ||
+        dadosFilme.atores[0] == '' || dadosFilme.atores[0] == undefined || dadosFilme.atores[0] == null || dadosFilme.atores[0] == 0 ||
+        dadosFilme.generos[0] == '' || dadosFilme.generos[0] == undefined || dadosFilme.generos[0] == null || dadosFilme.generos[0] == 0 
         ) {
             return message.ERROR_REQUIRED_FIELDS //400
         } else {
@@ -146,8 +152,44 @@ const setAtualizarFilme = async function (id, dadosFilme, contentType) {
                 // encamiha para o DAO para inserir no banco
                 let atualizarFilme = await filmesDAO.updateFilme(idFilme, dadosFilme)
 
+                console.log('atualizar filme ' + atualizarFilme);
+
+                let relacaoFilmeAtorAtual = await atoresDAO.selectAtoresFilmeById(idFilme)
+                let relacaoFilmeGeneroAtual = await generosDAO.selectGenerosFilmeById(idFilme)
+                let relacaoFilmeDiretorAtual = await diretoresDAO.selectDiretorFilmeById(idFilme)
+
+                let idsAtoresAtuais = []
+                let idsGenerosAtuais = []
+                let idsDiretoresAtuais = []
+
+                relacaoFilmeAtorAtual.forEach(ator => {
+                    
+                    idsAtoresAtuais.push(ator.id)
+                });
+
+                relacaoFilmeGeneroAtual.forEach(genero => {
+
+                    idsGenerosAtuais.push(genero.id)
+                })
+
+                relacaoFilmeDiretorAtual.forEach(diretor => {
+
+                    idsDiretoresAtuais.push(diretor.id)
+                })
+
+
+
+
+                let atualizarRelacaoAtor = await atoresDAO.setAlterarRelacaoAtorFilme(idFilme, dadosFilme.atores, idsAtoresAtuais)
+                let atualizarRelacaoGenero = await generosDAO.setAlterarRelacaoGeneroFilme(idFilme, dadosFilme.generos, idsGenerosAtuais)
+                let atualizarRelacaoDiretor = await diretoresDAO.setAlterarRelacaoDiretorFilme(idFilme, dadosFilme.diretores, idsDiretoresAtuais)
+
                 console.log(atualizarFilme);
-                if (atualizarFilme == true) {
+                console.log(atualizarRelacaoAtor);
+                console.log(atualizarRelacaoDiretor);
+                console.log(atualizarRelacaoGenero);
+                
+                if (atualizarFilme && atualizarRelacaoAtor && atualizarRelacaoGenero && atualizarRelacaoDiretor) {
                     //retorno dos dados
                     console.log('certooo');
                     FilmeAlteradoJSON.filme = dadosFilme
@@ -156,7 +198,6 @@ const setAtualizarFilme = async function (id, dadosFilme, contentType) {
                     FilmeAlteradoJSON.status_code = message.SUCESS_UPDATED_ITEM.status_code
                     FilmeAlteradoJSON.message = message.SUCESS_UPDATED_ITEM.message
 
-                    console.log(FilmeAlteradoJSON);
                     return FilmeAlteradoJSON //201
                 } else {
                     return message.ERROR_INTERVAL_SERVER_DB //500
@@ -320,21 +361,21 @@ const setInserirCompra = async function (idCompra) {
     }
 }
 
-const getListarComprados = async function () {
+// const getListarComprados = async function () {
 
-    idsComprados = {}
+//     idsComprados = {}
 
-    let dadosComprados = await filmesDAO.selectAllComprados()
+//     let dadosComprados = await filmesDAO.selectAllComprados()
 
-    if(dadosComprados){
-        idsComprados.comprados = dadosComprados
-        idsComprados.quantidade = dadosComprados.length
+//     if(dadosComprados){
+//         idsComprados.comprados = dadosComprados
+//         idsComprados.quantidade = dadosComprados.length
 
-        return idsComprados
-    } else {
-        return false
-    }
-}
+//         return idsComprados
+//     } else {
+//         return false
+//     }
+// }
 
 const getNomeFilme = async function (nome) {
 
@@ -461,7 +502,6 @@ const getBuscarFilme = async function (id) {
 
 module.exports = {
     getNomeFilme,
-    getListarComprados,
     setInserirNovoFilme,
     setAtualizarFilme,
     getUltimosPedidos,

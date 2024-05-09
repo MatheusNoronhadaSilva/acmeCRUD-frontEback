@@ -108,39 +108,8 @@ const insertFilme = async function (dadosFilme) {
     }
 }
 
-const InsertClassificacao = async function(dadosClassificacao) {
-
-    let sql
-
-    try {
-        sql = `insert into tbl_classificacao (
-            classificacao, 
-            caracteristicas, 
-            img_classificacao
-            ) values
-            ('${dadosClassificacao.classificacao}', '${dadosClassificacao.caracteristicas}', '${dadosClassificacao.img_classificacao}');
-            `
-
-            console.log(sql);
-
-            console.log('inserindo');
-
-            let result = await prisma.$executeRawUnsafe(sql)
-
-            if(result) {
-                return result
-            } else {
-                return false
-            }
-    } catch (error) {
-        return false
-    }
-}
-
 const updateFilme = async function (id, dadosFilme) {
     //função para atualizar um filme no banco de dados
-
-    console.log('updateFilme');
 
     try {
 
@@ -152,12 +121,14 @@ const updateFilme = async function (id, dadosFilme) {
             nome = "${dadosFilme.nome}",
             sinopse = "${dadosFilme.sinopse}",
             duracao = "${dadosFilme.duracao}",
-            data_lancamento = '${dadosFilme.data_lancamento}",
-            data_relancamento = '${dadosFilme.data_relancamento}',
+            data_lancamento = "${dadosFilme.data_lancamento}",
+            data_relancamento = "${dadosFilme.data_relancamento}",
             foto_capa = "${dadosFilme.foto_capa}",
             valor_alugar = "${dadosFilme.valor_alugar}",
-            valor_comprar = "${dadosFilme.valor_comprar}"
-            where id = ${id}`
+            valor_comprar = "${dadosFilme.valor_comprar}",
+            id_classificacao = '${dadosFilme.id_classificacao}',
+            original_SitePirata = '${dadosFilme.original_SitePirata}'
+            where id = ${id};`
 
             console.log('if1');
             let result = await prisma.$executeRawUnsafe(sql)
@@ -173,18 +144,20 @@ const updateFilme = async function (id, dadosFilme) {
            } else {
             // dadosFilme.nome = 'teste'
             let sql = `update tbl_filme set
-            nome = '${dadosFilme.nome}',
-            sinopse = '${dadosFilme.sinopse}',
-            duracao = '${dadosFilme.duracao}',
-            data_lancamento = '${dadosFilme.data_lancamento}',
-            data_relancamento = null,
-            foto_capa = '${dadosFilme.foto_capa}',
-            valor_alugar = '${dadosFilme.valor_alugar}',
-            valor_comprar = '${dadosFilme.valor_comprar}'
+            nome = "${dadosFilme.nome}",
+            sinopse = "${dadosFilme.sinopse}",
+            duracao = "${dadosFilme.duracao}",
+            data_lancamento = "${dadosFilme.data_lancamento}",
+            data_relancamento = ${dadosFilme.data_relancamento},
+            foto_capa = "${dadosFilme.foto_capa}",
+            valor_alugar = "${dadosFilme.valor_alugar}",
+            valor_comprar = "${dadosFilme.valor_comprar}",
+            id_classificacao = '${dadosFilme.id_classificacao}',
+            original_SitePirata = '${dadosFilme.original_SitePirata}'
             where id = ${id};`
 
             console.log('if2');
-            console.log(sql);
+            
             let result = await prisma.$executeRawUnsafe(sql)
 
             console.log(result);
@@ -388,7 +361,6 @@ const selectByIdFilme = async function (id) {
 module.exports = {
     selectSexoById,
     deleteClassificacao,
-    InsertClassificacao,
     pegarUltimoId,
     selectByNameFilme,
     selectAllComprados,
