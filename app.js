@@ -352,6 +352,8 @@ app.get('/v2/acmeFilmes/atores/filtro/:id', cors(), async function(request, resp
 
     let id = request.params.id
 
+    console.log(id);
+
     let dadosAtores = await controllerAtores.getAtorByIdFilme(id)
 
     if(dadosAtores){

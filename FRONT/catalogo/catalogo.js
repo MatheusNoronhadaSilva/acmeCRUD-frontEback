@@ -10,6 +10,7 @@ const img_filme = document.getElementById('img_filme')
 const comprar = document.getElementById('comprar')
 const alugar = document.getElementById('alugar')
 const divComprar = document.getElementById('divComprar')
+const elenco = document.getElementById('elenco')
 
 async function carregarInfoFilme(){
 
@@ -33,6 +34,35 @@ async function carregarInfoFilme(){
     img_filme.src = filme.foto_capa
     comprar.textContent = 'R$'+filme.valor_comprar
     alugar.textContent = 'R$'+filme.valor_alugar +'/mês'
+}
+
+elenco.addEventListener('click', async function(){
+
+    const atores = await pegaAtoresDoFilme(idFilmeAtual)
+    const diretor = await pegarDiretoresDoFilme(idFilmeAtual)
+
+    console.log('diretor: ' + diretor + ' atores: ' + atores);
+})
+
+async function pegarDiretoresDoFilme(idFilmeAtual) {
+
+    const id = idFilmeAtual
+    const endpoint = `/v2/acmeFilme/diretores/filtro/${id}`
+    console.log(endpoint);
+    const diretor = await fetch(endpoint);
+    const DadosDiretor = await diretor.json();
+    console.log(DadosDiretor);
+    return DadosDiretor.diretor;
+}
+
+async function pegaAtoresDoFilme(idFilmeAtual) {
+
+    const id = idFilmeAtual
+    const endpoint = `/v2/acmeFilme/atores/filtro/${id}`
+    const atores = await fetch(endpoint);
+    const DadosAtores = await atores.json();
+    console.log(DadosAtores);
+    return DadosAtores.atores;
 }
 
 function arrumardata(data){

@@ -122,6 +122,8 @@ const selectAtoresFilmeById = async function(id){
         JOIN tbl_filme_ator ON tbl_ator.id = tbl_filme_ator.id_ator
         WHERE tbl_filme_ator.id_filme = ${id};`
 
+        console.log(sql);
+
 
         let result = await prisma.$queryRawUnsafe(sql)
 
@@ -202,7 +204,10 @@ const deleteRelacaoAtorFilmeByIdFilme = async function(idFilme) {
         
         let sql = `DELETE FROM tbl_filme_ator WHERE id_filme = ${idFilme}; `
 
+        console.log(sql);
         let result = await prisma.$executeRawUnsafe(sql)
+
+        console.log('result: ' + result);
 
         if(result){
             return result

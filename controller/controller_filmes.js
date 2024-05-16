@@ -13,6 +13,7 @@ const classificacoesDAO = require('../model/DAO/classificacoes.js')
 const diretoresDAO = require('../model/DAO/diretores.js')
 const atoresDAO = require('../model/DAO/atores.js')
 const  generosDAO = require('../model/DAO/generos.js')
+const favoritosDAO = require('../model/DAO/favoritos.js')
 
 const setInserirNovoFilme = async function (dadosFilme, contentType) {
     //função para inserir um novo filme
@@ -35,7 +36,6 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
                 dadosFilme.valor_alugar =='' || dadosFilme.valor_alugar == undefined || dadosFilme.valor_alugar == null || dadosFilme.valor_alugar.length > 6 || 
                 dadosFilme.valor_comprar == '' || dadosFilme.valor_comprar == undefined || dadosFilme.valor_comprar == null || dadosFilme.valor_comprar.length > 6 ||
                 dadosFilme.id_classificacao == '' || dadosFilme.id_classificacao == undefined || dadosFilme.id_classificacao == null || ![1,2,3,4,5,6].includes(dadosFilme.id_classificacao) ||
-                dadosFilme.original_SitePirata != 1 && dadosFilme.original_SitePirata != 0 ||
                 dadosFilme.diretores[0] == '' || dadosFilme.diretores[0] == undefined || dadosFilme.diretores[0] == null || dadosFilme.diretores[0] == 0 ||
                 dadosFilme.atores[0] == '' || dadosFilme.atores[0] == undefined || dadosFilme.atores[0] == null || dadosFilme.atores[0] == 0 ||
                 dadosFilme.generos[0] == '' || dadosFilme.generos[0] == undefined || dadosFilme.generos[0] == null || dadosFilme.generos[0] == 0 
@@ -224,11 +224,19 @@ const setExcluirFilmes = async function (id) {
         return message.ERROR_INVALID_ID //400
     } else {
 
+        console.log(idFilme);
+
         let relacaoAtorFilme = await atoresDAO.deleteRelacaoAtorFilmeByIdFilme(idFilme)
         let relacaoDiretorFilme = await diretoresDAO.deleteRelacaoDiretorFilmeByIdFilme(idFilme)
         let relacaoGeneroFilme = await generosDAO.deleteRelacaoGeneroFilmeByIdFilme(idFilme)
+        let relacaoFavoritoFilme = await favoritosDAO.deleteRelacaoFavoritoFilmeByIdFilme(idFilme)
         let dadosFilme = await filmesDAO.deleteFilme(idFilme)
 
+
+        console.log(relacaoAtorFilme);
+        console.log(relacaoDiretorFilme);
+        console.log(relacaoGeneroFilme);
+        console.log(relacaoFavoritoFilme);
         console.log(dadosFilme);
 
         //validação 
@@ -241,7 +249,7 @@ const setExcluirFilmes = async function (id) {
             //Caso dadosFilme não receba os dados do DB, significa que o erro esta no DB, pois dadosFilme
             // Nem se quer esta retornando algo, mesmo que esteja retornando null, logo, o erro deve estar
             // na hora de fazer a requisição do banco, ou o model pra pegar o resultado do banco 
-            return message.ERROR_NOT_FOUND //500
+            return message.ERROR_NOT_FOUND //404
         } else {
             return message.ERROR_INTERVAL_SERVER_DB
         }
