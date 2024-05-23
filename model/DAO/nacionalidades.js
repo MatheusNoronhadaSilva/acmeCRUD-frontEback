@@ -54,7 +54,37 @@ const setInserirRelacaoNacionalidadeAtor = async function (idAtor, idNacionalida
             return false
         }
     } catch (error) {
-        
+        return false
+    }
+}
+
+const setInserirRelacaoNacionalidadeDiretor = async function (idDiretor, idNacionalidade) {
+
+    try {
+
+        console.log('relação: ' + idDiretor + ' com ' + idNacionalidade);
+
+        let sql = `insert into tbl_diretor_nacionalidade (
+            id_diretor, 
+            id_nacionalidade
+        ) values
+        (
+            ${idDiretor},
+            ${idNacionalidade});`
+console.log(sql);
+            console.log('oiiiiiiiii');
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            console.log('erro1');
+            return false
+        }
+    } catch (error) {
+        console.log('erro2');
+        return false
     }
 }
 
@@ -131,6 +161,7 @@ const insertNacionalidade = async function(dadosNacionalidade){
 }
 
 module.exports = {
+    setInserirRelacaoNacionalidadeDiretor,
     insertNacionalidade,
     selectNacionalidadeDiretorById,
     deleteRelacaoNacionalidadeAtor,

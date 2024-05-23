@@ -87,9 +87,78 @@ const getDiretoresByIdFilme = async function(id){
 
 const setInserirNovoDiretor = async function (dadosDiretor, contentType) {
 
+    try {
+        
+        if(String(contentType).toLowerCase() == 'application/json') {
+
+            let infoDiretor = {}
+            let infoDiretorNacionalidade = {}
+
+            console.log(dadosDiretor);
+
+            console.log('sdsdsd');
+
+            if(dadosDiretor.nome == '' || dadosDiretor.nome == undefined || dadosDiretor.nome == null || dadosDiretor.nome.length > 60 ||
+               dadosDiretor.email == '' || dadosDiretor.email == undefined || dadosDiretor.email == null || dadosDiretor.email.length > 80 ||
+               dadosDiretor.biografia > 65000 ||
+               dadosDiretor.nascimento == '' || dadosDiretor.nascimento == undefined || dadosDiretor.nascimento == null || dadosDiretor.nascimento.length > 10 ||
+               dadosDiretor.sexo == '' || dadosDiretor.sexo == undefined || dadosDiretor.sexo == null || dadosDiretor.sexo.length > 1 || dadosDiretor.sexo != 1 && dadosDiretor.sexo != 2 ||
+               dadosDiretor.nacionalidade[0] == '' || dadosDiretor.nacionalidade[0] == undefined || dadosDiretor.nacionalidade[0] == null || dadosDiretor.nacionalidade[0].length > 3
+            ) {
+                message.ERROR_REQUIRED_FIELDS //400
+            } else {
+
+                console.log('assasa');
+
+                infoDiretor.nome = dadosDiretor.nome
+                infoDiretor.email = dadosDiretor.email
+                infoDiretor.biografia = dadosDiretor.biografia
+                infoDiretor.nascimento = dadosDiretor.nascimento
+                infoDiretor.sexo = dadosDiretor.sexo 
+
+                console.log(infoDiretor);
+
+                let novoDiretor = await diretoresDAO.setInserirNovoDiretor(infoDiretor)
+                console.log('envio: ' + novoDiretor);
+
+                if(novoDiretor == 1) {
+
+                    console.log('dsdsdsdsdsdsd');
+                    let ultimoEnvioDiretor = await diretoresDAO.selectUltimoEnvioDiretor()
+                    console.log('ultimo diretor: ' + ultimoEnvioDiretor);
+
+                    infoDiretorNacionalidade.idDiretor = ultimoEnvioDiretor
+                    infoDiretorNacionalidade.nacionalidade = dadosDiretor.nacionalidade
+
+                    console.log(infoDiretorNacionalidade);
+
+                    let relacaoDiretorNacionalidade = await nacionalidadesDAO.setInserirRelacaoNacionalidadeDiretor(infoDiretorNacionalidade.idDiretor, infoDiretorNacionalidade.nacionalidade[0])
+
+                    if(relacaoDiretorNacionalidade) {
+                        if(infoDiretorNacionalidade.nacionalidade[1] != null) {
+                            relacaoDiretorNacionalidade = await nacionalidadesDAO.setInserirRelacaoNacionalidadeDiretor(infoDiretorNacionalidade.idDiretor, infoDiretorNacionalidade.nacionalidade[1])
+
+                            return ultimoEnvioDiretor
+                        } else {
+                            return ultimoEnvioDiretor
+                        }
+                    } else {
+                        console.log('ssdsdsdsd');
+                        return false
+                    }
+                } else {
+                    console.log('aaaaaaaa');
+                    return false 
+                }
+            }
+        }
+    } catch (error) {
+        return false
+    }
 }
 
 module.exports = {
+    setInserirNovoDiretor,
     getDiretoresByIdFilme,
     getAllDiretores
 }

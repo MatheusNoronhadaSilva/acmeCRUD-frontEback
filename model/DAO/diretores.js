@@ -12,15 +12,15 @@ const { PrismaClient } = require('@prisma/client')
 //instancia da classe prisma client
 const prisma = new PrismaClient()
 
-const setInserirNovoDiretor = async function (infoAtor) {
+const setInserirNovoDiretor = async function (infoDiretor) {
 
     try {
 
         let sql
 
-        if(infoAtor.biografia == null || infoAtor.biografia == undefined || infoAtor.biografia == '') {
+        if(infoDiretor.biografia == null || infoDiretor.biografia == undefined || infoDiretor.biografia == '') {
 
-            sql = `insert into tbl_ator (
+            sql = `insert into tbl_diretor (
                 nome, 
                 email,
                 biografia,
@@ -28,13 +28,13 @@ const setInserirNovoDiretor = async function (infoAtor) {
                 id_sexo
             ) values
             (
-                '${infoAtor.nome}', 
-                '${infoAtor.email}',
+                '${infoDiretor.nome}', 
+                '${infoDiretor.email}',
                 null, 
-                '${infoAtor.nascimento}', 
-                ${infoAtor.sexo});`
+                '${infoDiretor.nascimento}', 
+                ${infoDiretor.sexo});`
         } else {
-            sql = `insert into tbl_ator (
+            sql = `insert into tbl_diretor (
                 nome, 
                 email,
                 biografia,
@@ -42,12 +42,14 @@ const setInserirNovoDiretor = async function (infoAtor) {
                 id_sexo
             ) values
             (
-                '${infoAtor.nome}', 
-                '${infoAtor.email}',
-                '${infoAtor.biografia}', 
-                '${infoAtor.nascimento}', 
-                ${infoAtor.sexo});`
+                '${infoDiretor.nome}', 
+                '${infoDiretor.email}',
+                '${infoDiretor.biografia}', 
+                '${infoDiretor.nascimento}', 
+                 ${infoDiretor.sexo});`
         }
+        console.log(sql);
+    
 
         let result = await prisma.$executeRawUnsafe(sql)
         
@@ -66,9 +68,11 @@ const selectUltimoEnvioDiretor = async function () {
 
     let sql_id
 
-    sql_id = 'select cast(last_insert_id() as decimal) as id from tbl_ator limit 1' 
+    sql_id = 'select cast(last_insert_id() as decimal) as id from tbl_diretor limit 1' 
 
     let pegarId = await prisma.$queryRawUnsafe(sql_id)
+
+    console.log('id pego: ' + pegarId[0].id);
 
     if(pegarId && pegarId.length >  0) {
         return pegarId[0].id
@@ -138,6 +142,8 @@ const setInserirRelacaoDiretorFilme = async function (idFilme, arrayIdDiretor) {
         return false
     }
 }
+
+
 
 const deleteRelacaoDiretorFilmeByIdFilme = async function(idFilme) {
 
